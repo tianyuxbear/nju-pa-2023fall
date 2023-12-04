@@ -15,9 +15,11 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <memory/vaddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
+struct WP;
 
 static int is_batch_mode = false;
 
@@ -55,6 +57,105 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char* args){
+  char * arg = strtok(NULL, " ");
+  if(arg == NULL){
+    cpu_exec(1);
+  }else{
+    uint64_t n = atoi(arg);
+    cpu_exec(n);
+  }
+  return 0;
+}
+
+static int cmd_info(char* args){
+  char* arg = strtok(NULL, " ");
+  if(arg == NULL){
+    Log("Miss argument!");
+    return 0;
+  }
+  if(strcmp(arg, "r") == 0){
+    isa_reg_display();
+  }else if(strcmp(arg, "w") == 0){
+    watchpoint_display();
+  }else{
+    Log("Unknown argument: %s", arg);
+  }
+  return 0;
+}
+
+static int cmd_x(char* args){
+  char* arg1 = strtok(NULL, " ");
+  if(arg1 == NULL){
+    Log("Miss first argument!");
+    return 0;
+  }
+  int nwords = atoi(arg1);
+
+
+  char* arg2 = arg1 + strlen(arg1) + 1;
+  if(arg2 == NULL){
+    Log("Miss second argument!");
+    return 0;
+  }
+  bool success = true;
+  word_t xaddr = expr(arg2, &success);
+  if(!success){
+    Log("Input expression error: can't parse");
+    return 0;
+  }
+  for(int i = 0; i < nwords; i++){
+    printf(FMT_WORD "\n",vaddr_read(xaddr, 4));
+    xaddr += 4;
+  }
+  return 0;
+}
+
+static int cmd_p(char* args){
+  if(args == NULL){
+    Log("Miss argument!");
+    return 0;
+  }
+
+  bool success = true;
+  word_t result = expr(args, &success);
+  if(!success){
+    Log("Input expression error: can't parse");
+    return 0;
+  }
+
+  if(strstr(args, "$pc") != NULL){
+    printf(FMT_WORD "\n", result);
+  }else{
+    printf("%lu\n", result);
+  }
+
+  return 0;
+}
+
+static int cmd_w(char* args){
+  if(args == NULL){
+    Log("Miss argument!");
+    return 0;
+  }
+  WP* wpointer = new_wp(args);
+  assert(wpointer != NULL);
+  return 0;
+}
+
+static int cmd_d(char* args){
+  char * arg = strtok(NULL, " ");
+  if(arg == NULL){
+    Log("Missing argument!");
+    return 0;
+  }
+
+  int num = atoi(arg);
+  free_wp(num);
+
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -65,6 +166,12 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
+  {"si", "Steps N(default: 1) instructions", cmd_si},
+  {"info", "Print program status", cmd_info},
+  {"x", "Scan memory, print memory contents", cmd_x},
+  {"p", "Print expression value", cmd_p},
+  {"w", "Set watch point", cmd_w},
+  {"d", "delete watch point", cmd_d}
 
 };
 

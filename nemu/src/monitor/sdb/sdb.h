@@ -20,4 +20,29 @@
 
 word_t expr(char *e, bool *success);
 
+#define NR_WP 32
+#define LEN 1024
+
+typedef struct watchpoint {
+  int NO;
+  struct watchpoint *next;
+
+  /* TODO: Add more members if necessary */
+  char expression[LEN];
+  word_t value;
+  uint8_t status;
+
+} WP;
+
+enum{
+  WP_FREE = 0,
+  WP_BUSY = 1,
+  WP_STOP = 2
+};
+
+WP* new_wp(char*);
+void free_wp(int num);
+void watchpoint_display();
+void scan_watchpoint();
+
 #endif
