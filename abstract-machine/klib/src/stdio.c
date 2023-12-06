@@ -41,7 +41,10 @@ int sprintf(char *str, const char *format, ...) {
       nbyte++;
     }
   }
+  
+  va_end(args);
   *str = '\0';
+
   return nbyte;
 }
 
@@ -85,7 +88,7 @@ int handle_int(char* str, int num){
 
   int bytes = strlen(num_str);
   strncpy(str, num_str,bytes);
-  
+
   return bytes;
 }
 
