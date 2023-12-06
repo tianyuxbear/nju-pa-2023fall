@@ -52,10 +52,5 @@ LDFLAGS += $(CFLAGS_BUILD)
 # Include rules for menuconfig
 include $(NEMU_HOME)/scripts/config.mk
 
-ifdef CONFIG_TARGET_AM
-include $(AM_HOME)/Makefile
-LINKAGE += $(ARCHIVES)
-else
 # Include rules to build NEMU
 include $(NEMU_HOME)/scripts/native.mk
-endif
