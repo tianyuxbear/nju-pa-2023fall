@@ -91,8 +91,9 @@ CXXFLAGS +=  $(CFLAGS) -ffreestanding -fno-rtti -fno-exceptions
 ASFLAGS  += -MMD $(INCFLAGS)
 LDFLAGS  += -z noexecstack
 
-
-CFLAGS += -DCONFIG_TARGET_AM 
+# ifdef CONFIG_TARGET_AM
+# 	CFLAGS += -DCONFIG_TARGET_AM=1 
+# endif
 
 ## 4. Arch-Specific Configurations
 
