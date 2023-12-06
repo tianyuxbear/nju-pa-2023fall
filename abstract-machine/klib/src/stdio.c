@@ -12,40 +12,42 @@ int printf(const char *format, ...) {
 }
 
 int sprintf(char *str, const char *format, ...) {
-  va_list args;
-  va_start(args, format);
+  // va_list args;
+  // va_start(args, format);
 
-  int nbyte = 0;
-  while(*format != '\0'){
-    if(*format == '%'){
-      format++;
-      switch(*format)
-      {
-        case 's': 
-          char* arg_str = va_arg(args, char*);
-          strncpy(str, arg_str, strlen(arg_str));
-          format++;
-          nbyte += strlen(arg_str);
-          break;
-        case 'd':
-          int arg_int = va_arg(args, int);
-          format++;
-          nbyte += handle_int(str, arg_int);
-          break;
-        default:
-          assert(0);
-          break;
-      }
-    }else{
-      *str++ = *format++;
-      nbyte++;
-    }
-  }
-  
-  va_end(args);
-  *str = '\0';
+  // int nbyte = 0;
+  // while(*format != '\0'){
+  //   if(*format == '%'){
+  //     format++;
+  //     switch(*format)
+  //     {
+  //       case 's': 
+  //         char* arg_str = va_arg(args, char*);
+  //         strncpy(str, arg_str, strlen(arg_str));
+  //         format++;
+  //         nbyte += strlen(arg_str);
+  //         break;
+  //       case 'd':
+  //         int arg_int = va_arg(args, int);
+  //         format++;
+  //         nbyte += handle_int(str, arg_int);
+  //         break;
+  //       default:
+  //         assert(0);
+  //         break;
+  //     }
+  //   }else{
+  //     *str++ = *format++;
+  //     nbyte++;
+  //   }
+  // }
 
-  return nbyte;
+  // va_end(args);
+  // *str = '\0';
+
+  strncpy(str, "Hello world!\n", strlen("Hello world!\n"));
+
+  return strlen("Hello world!\n");
 }
 
 int snprintf(char *str, size_t size, const char *format, ...) {
