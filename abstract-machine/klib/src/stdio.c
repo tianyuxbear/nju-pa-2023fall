@@ -51,8 +51,6 @@ int sprintf(char *str, const char *format, ...) {
   va_end(ap);
   *str = '\0';
 
-  // strncpy(str, "Hello world!\n", strlen("Hello world!\n"));
-
   return nbyte;
 }
 
