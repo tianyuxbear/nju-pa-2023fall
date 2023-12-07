@@ -138,7 +138,7 @@ void cpu_exec(uint64_t n) {
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 
-  if(nemu_state.state == NEMU_QUIT || nemu_state.state == NEMU_ABORT)
+  //if(nemu_state.state == NEMU_QUIT || nemu_state.state == NEMU_ABORT)
     output_iringbuf();
 
   switch (nemu_state.state) {
