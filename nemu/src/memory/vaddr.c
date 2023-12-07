@@ -16,14 +16,29 @@
 #include <isa.h>
 #include <memory/paddr.h>
 
+static char rtracebuf[128], wtracebuf[128];
+
 word_t vaddr_ifetch(vaddr_t addr, int len) {
   return paddr_read(addr, len);
 }
 
 word_t vaddr_read(vaddr_t addr, int len) {
-  return paddr_read(addr, len);
+  word_t ret = paddr_read(addr, len);
+  memset(rtracebuf, 0, sizeof(rtracebuf));
+  snprintf(rtracebuf, sizeof(rtracebuf), "mem read ===> addr: " FMT_WORD "    len: %d    read value: %lu", addr, len, ret);
+  IFDEF(CONFIG_MTRACE, puts(rtracebuf));
+#ifdef CONFIG_MTRACE_COND
+  if(MTRACE_COND) {log_write("%s\n", rtracebuf);}
+#endif
+  return ret;
 }
 
-void vaddr_write(vaddr_t addr, int len, word_t data) {
+void vaddr_write(vaddr_t addr, int len, word_t data) {  
   paddr_write(addr, len, data);
+  memset(wtracebuf, 0, sizeof(wtracebuf));
+  snprintf(wtracebuf, sizeof(wtracebuf), "mem write ===> addr: " FMT_WORD "    len: %d    write data: %lu", addr, len, data);
+  IFDEF(CONFIG_MTRACE, puts(wtracebuf));
+#ifdef CONFIG_MTRACE_COND
+  if(MTRACE_COND) {log_write("%s\n", rtracebuf);}
+#endif
 }
