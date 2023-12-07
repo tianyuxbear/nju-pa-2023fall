@@ -31,6 +31,12 @@ uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
+
+// instruction ring buffer
+#define IRINGBUF_SIZE 16
+static char iringbuf[IRINGBUF_SIZE][128];
+static uint8_t iringbuf_index = 0;
+
 void device_update();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
@@ -41,6 +47,11 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 #ifdef CONFIG_WATCHPOINT
   if(CONFIG_WATCHPOINT) {scan_watchpoint();}
+#endif
+
+#ifdef CONFIG_ITRACE
+  strncpy(iringbuf[iringbuf_index], _this->logbuf, sizeof(_this->logbuf));
+  iringbuf_index = (iringbuf_index + 1) % IRINGBUF_SIZE;
 #endif
 }
 
@@ -81,8 +92,8 @@ static void execute(uint64_t n) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
-    if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
+    if (nemu_state.state != NEMU_RUNNING) break;
   }
 }
 
@@ -98,6 +109,16 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   statistic();
+}
+
+static void output_iringbuf(){
+  for(uint8_t i = 0; i < IRINGBUF_SIZE; i++){
+    if(strlen(iringbuf[i]) == 0) break;
+    if(i == iringbuf_index - 1)
+      printf("===> %s\n", iringbuf[i]);
+    else 
+      printf("     %s\n", iringbuf[i]);
+  }
 }
 
 /* Simulate how the CPU works. */
@@ -116,6 +137,9 @@ void cpu_exec(uint64_t n) {
 
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
+
+  if(nemu_state.state == NEMU_QUIT || nemu_state.state == NEMU_ABORT)
+    output_iringbuf();
 
   switch (nemu_state.state) {
     case NEMU_RUNNING: nemu_state.state = NEMU_STOP; break;
