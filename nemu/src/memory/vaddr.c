@@ -25,7 +25,7 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
 word_t vaddr_read(vaddr_t addr, int len) {
   word_t ret = paddr_read(addr, len);
   memset(rtracebuf, 0, sizeof(rtracebuf));
-  snprintf(rtracebuf, sizeof(rtracebuf), "mem read ===> addr: " FMT_WORD "    len: %d    read value: %lu", addr, len, ret);
+  snprintf(rtracebuf, sizeof(rtracebuf), "mem read  ===> addr: " FMT_WORD "    len: %d    read value: %lu", addr, len, ret);
   IFDEF(CONFIG_MTRACE, puts(rtracebuf));
 #ifdef CONFIG_MTRACE_COND
   if(MTRACE_COND) {log_write("%s\n", rtracebuf);}
