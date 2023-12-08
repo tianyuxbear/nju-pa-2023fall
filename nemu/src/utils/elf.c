@@ -13,7 +13,6 @@ int sym_num = 0, str_size = 0;
 
 #define FTRACE_BUF_SIZE 256
 char ftrace_buf[FTRACE_BUF_SIZE];
-int depth = 0;
 
 void init_elf(const char* elf_file){
 	if(elf_file == NULL) {
@@ -157,6 +156,10 @@ void init_elf(const char* elf_file){
 	return;
 }
 
+#define MAX_DEPTH 64 
+char ftrace[MAX_DEPTH][32];
+int depth = 0;
+
 void check_jal(word_t pc, word_t dnpc){
 	//may be a function call instruction
 	int pc_index = -1, dnpc_index = -1;
@@ -178,6 +181,7 @@ void check_jal(word_t pc, word_t dnpc){
 	char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
 	snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call %s [%s ==> %s]", dnpc_ptr, pc_ptr, dnpc_ptr);
 	puts(ftrace_buf);
+	strncpy(ftrace[depth], pc_ptr, strlen(pc_ptr) + 1);
 	depth++;
 
 	return;
@@ -198,12 +202,14 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 
 		memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
 		snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
+		char* pc_ptr = strtab + symtab[pc_index].st_name;
+		char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
+
 		depth--;
+		while(strncmp(dnpc_ptr, ftrace[depth], strlen(dnpc_ptr)) != 0) depth--;
 		for(int j = 0; j < depth; j++)
 			snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
 	
-		char* pc_ptr = strtab + symtab[pc_index].st_name;
-		char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
 		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
 		puts(ftrace_buf);
 		return;
