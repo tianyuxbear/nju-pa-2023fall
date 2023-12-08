@@ -92,6 +92,8 @@ void init_elf(const char* elf_file){
 		return;
 	}
 
+	printf("str_offset: 0x%lx, str_size: 0x%lx\n", section_headers[strtab_index].sh_offset, section_headers[strtab_index].sh_size);
+
 	str_size = section_headers[strtab_index].sh_size;
 	if(str_size > STR_SIZE){
 		Log("String table too long ==> %d", str_size);
@@ -128,7 +130,7 @@ void init_elf(const char* elf_file){
 
 void check_jal(word_t pc, word_t dnpc, int rd){
 	if(rd != 1) return;
-	
+
 	//may be a function call instruction
 	for(int i = 0; i < sym_num; i++){
 		if((symtab[i].st_info & 0xf) != STT_FUNC) continue;
@@ -142,7 +144,7 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 			}
 			char* ptr = strtab + symtab[i].st_name;
 			snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call [%s@0x%016lx]", ptr, dnpc);
-			puts(ftrace_buf);
+			//puts(ftrace_buf);
 			depth++;
 			return;
 		}
@@ -164,7 +166,7 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 				}
 				char* ptr = strtab + symtab[i].st_name;
 				snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret [%s@0x%016lx]", ptr, dnpc);
-				puts(ftrace_buf);
+				//puts(ftrace_buf);
 				depth--;
 				return;
 			}
