@@ -124,8 +124,7 @@ void init_elf(const char* elf_file){
 	free(section_headers);
 
 	for(int i = 0; i < sym_num; i++)
-		if(symtab[i].st_info == STT_FUNC) 
-			printf("find one function ==> value: 0x%016lx", symtab[i].st_value);
+		printf("value: 0x%016lx		type: %d\n", symtab[i].st_value, symtab[i].st_info);
 
 	return;
 }
