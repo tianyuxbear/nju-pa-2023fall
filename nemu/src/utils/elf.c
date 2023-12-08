@@ -71,6 +71,7 @@ void init_elf(const char* elf_file){
 	}
 
 	sym_num = section_headers[symtab_index].sh_size / sizeof(Elf64_Sym);
+	printf("sym_num: %d\n" , sym_num);
 	if(sym_num > SYM_NUM){
 		Log("Too many symbol entry ==> %d", sym_num);
 		fclose(fp);
@@ -122,18 +123,19 @@ void init_elf(const char* elf_file){
 		return;
 	}
 	free(section_headers);
+
 	return;
 }
 
 void check_jal(word_t pc, word_t dnpc, int rd){
-	puts("enter jal");
+	//puts("enter jal");
 	if(rd != 1) return;
 	//may be a function call instruction
 	for(int i = 0; i < sym_num; i++){
 		if(symtab[i].st_info !=  STT_FUNC) continue;
 		if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
 		{
-			puts("enter jal, match func");
+			//puts("enter jal, match func");
 			memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
 			snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
 			for(int j = 0; j < depth; j++){
