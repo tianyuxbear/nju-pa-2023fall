@@ -25,7 +25,7 @@ void init_elf(const char* elf_file){
 	Elf64_Ehdr elf_header;
 	ret = fread(&elf_header, sizeof(Elf64_Ehdr), 1, fp);
 	if(ret != sizeof(Elf64_Ehdr)){
-		Log("Read elf header error");
+		Log("Read elf header error ==> ret: %d\n", ret);
 		fclose(fp);
 		return;
 	}
