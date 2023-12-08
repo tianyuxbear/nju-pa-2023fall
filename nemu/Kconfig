@@ -161,6 +161,17 @@ config MTRACE_COND
   string "Only log mem access when the condition is true"
   default "false"
 
+config FTRACE
+  depends on TRACE
+  bool "Enable function call tracer"
+  default n
+
+config FTRACE_COND
+  depends on FTRACE
+  string "Only log function call when the condition is true"
+  default "false"
+
+
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF

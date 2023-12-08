@@ -6,7 +6,11 @@
 
 Elf64_Sym symtab[SYM_NUM];
 char strtab[STR_SIZE];
+int sym_num = 0, str_size = 0;
 
+#define FTRACE_BUF_SIZE 256
+char ftrace_buf[FTRACE_BUF_SIZE];
+int depth = 0;
 
 void init_elf(const char* elf_file){
 	if(elf_file == NULL) {
@@ -66,7 +70,7 @@ void init_elf(const char* elf_file){
 		return;
 	}
 
-	int sym_num = section_headers[symtab_index].sh_size / sizeof(Elf64_Sym);
+	sym_num = section_headers[symtab_index].sh_size / sizeof(Elf64_Sym);
 	if(sym_num > SYM_NUM){
 		Log("Too many symbol entry ==> %d", sym_num);
 		fclose(fp);
@@ -88,7 +92,7 @@ void init_elf(const char* elf_file){
 		return;
 	}
 
-	int str_size = section_headers[strtab_index].sh_size;
+	str_size = section_headers[strtab_index].sh_size;
 	if(str_size > STR_SIZE){
 		Log("String table too long ==> %d", str_size);
 		fclose(fp);
@@ -120,3 +124,49 @@ void init_elf(const char* elf_file){
 	free(section_headers);
 	return;
 }
+
+void check_jal(word_t pc, word_t dnpc, int rd){
+	if(rd != 1) return;
+	
+	//may be a function call instruction
+	for(int i = 0; i < sym_num; i++){
+		if(symtab[i].st_info !=  STT_FUNC) continue;
+		if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
+		{
+			memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
+			snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
+			for(int j = 0; j < depth; j++){
+				snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
+			}
+			char* ptr = strtab + symtab[i].st_name;
+			snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call [%s@0x%016lx]", ptr, dnpc);
+			puts(ftrace_buf);
+			depth++;
+			return;
+		}
+	}
+	return;
+}
+
+// void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
+// 	// ret instruction
+// 	if(rd == 0 && rs1 == 1 && offset == 0){
+// 		for(int i = 0; i < sym_num; i++){
+// 			if(symtab[i].st_info !=  STT_FUNC) continue;
+// 			if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
+// 			{
+// 				memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
+// 				snprintf(ftrace_buf, 20, FMT_WORD ": ", pc);
+// 				for(int j = 0; j < depth; j++){
+// 					snprintf(ftrace_buf, 2, "  ");
+// 				}
+// 				char* ptr = strtab + symtab[i].st_name;
+// 				snprintf(ftrace_buf, FTRACE_BUF_SIZE - 20 - depth * 2, "ret [%s@" FMT_WORD "]", ptr, dnpc);
+// 				puts(ftrace_buf);
+// 				depth--;
+// 				return;
+// 			}
+// 		}
+// 	}
+// 	check_jal(pc, dnpc, rd);
+// }
