@@ -157,9 +157,7 @@ void init_elf(const char* elf_file){
 	return;
 }
 
-void check_jal(word_t pc, word_t dnpc, int rd){
-	if(rd != 1) return;
-
+void check_jal(word_t pc, word_t dnpc){
 	//may be a function call instruction
 	int pc_index = -1, dnpc_index = -1;
 	for(int i = 0; i < sym_num; i++){
@@ -209,5 +207,5 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
 		puts(ftrace_buf);
 	}
-	check_jal(pc, dnpc, rd);
+	check_jal(pc, dnpc);
 }
