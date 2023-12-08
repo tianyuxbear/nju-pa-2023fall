@@ -71,7 +71,6 @@ void init_elf(const char* elf_file){
 	}
 
 	sym_num = section_headers[symtab_index].sh_size / sizeof(Elf64_Sym);
-	printf("sym_num: %d\n" , sym_num);
 	if(sym_num > SYM_NUM){
 		Log("Too many symbol entry ==> %d", sym_num);
 		fclose(fp);
@@ -123,6 +122,10 @@ void init_elf(const char* elf_file){
 		return;
 	}
 	free(section_headers);
+
+	for(int i = 0; i < sym_num; i++)
+		if(symtab[i].st_info == STT_FUNC) 
+			printf("find one function ==> value: 0x%016lx", symtab[i].st_value);
 
 	return;
 }
