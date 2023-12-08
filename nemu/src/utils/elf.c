@@ -148,25 +148,25 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 	return;
 }
 
-// void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
-// 	// ret instruction
-// 	if(rd == 0 && rs1 == 1 && offset == 0){
-// 		for(int i = 0; i < sym_num; i++){
-// 			if(symtab[i].st_info !=  STT_FUNC) continue;
-// 			if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
-// 			{
-// 				memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
-// 				snprintf(ftrace_buf, 20, FMT_WORD ": ", pc);
-// 				for(int j = 0; j < depth; j++){
-// 					snprintf(ftrace_buf, 2, "  ");
-// 				}
-// 				char* ptr = strtab + symtab[i].st_name;
-// 				snprintf(ftrace_buf, FTRACE_BUF_SIZE - 20 - depth * 2, "ret [%s@" FMT_WORD "]", ptr, dnpc);
-// 				puts(ftrace_buf);
-// 				depth--;
-// 				return;
-// 			}
-// 		}
-// 	}
-// 	check_jal(pc, dnpc, rd);
-// }
+void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
+	// ret instruction
+	if(rd == 0 && rs1 == 1 && offset == 0){
+		for(int i = 0; i < sym_num; i++){
+			if(symtab[i].st_info !=  STT_FUNC) continue;
+			if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
+			{
+				memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
+				snprintf(ftrace_buf, 21,  "0x%016lx: ", pc);
+				for(int j = 0; j < depth; j++){
+					snprintf(ftrace_buf + strlen(ftrace_buf), 3, "  ");
+				}
+				char* ptr = strtab + symtab[i].st_name;
+				snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret [%s@0x%016lx]", ptr, dnpc);
+				puts(ftrace_buf);
+				depth--;
+				return;
+			}
+		}
+	}
+	check_jal(pc, dnpc, rd);
+}
