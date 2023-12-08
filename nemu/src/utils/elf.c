@@ -173,7 +173,7 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 			}
 			char* ptr = strtab + symtab[i].st_name;
 			snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call [%s@0x%016lx]", ptr, dnpc);
-			//puts(ftrace_buf);
+			puts(ftrace_buf);
 			depth++;
 			return;
 		}
@@ -195,7 +195,7 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 				}
 				char* ptr = strtab + symtab[i].st_name;
 				snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret [%s@0x%016lx]", ptr, dnpc);
-				//puts(ftrace_buf);
+				puts(ftrace_buf);
 				depth--;
 				return;
 			}
