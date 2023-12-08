@@ -161,45 +161,53 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 	if(rd != 1) return;
 
 	//may be a function call instruction
+	int pc_index = -1, dnpc_index = -1;
 	for(int i = 0; i < sym_num; i++){
 		if((symtab[i].st_info & 0xf) != STT_FUNC) continue;
+		if(pc >= symtab[i].st_value && pc < symtab[i].st_value + symtab[i].st_size)
+			pc_index = i;
 		if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
-		{
-			//puts("enter jal, match func");
-			memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
-			snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
-			for(int j = 0; j < depth; j++){
-				snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
-			}
-			char* ptr = strtab + symtab[i].st_name;
-			snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call [%s@0x%016lx]", ptr, dnpc);
-			puts(ftrace_buf);
-			depth++;
-			return;
-		}
+			dnpc_index = i;
+		if(pc_index != -1 && dnpc_index != -1) break;
 	}
+
+	memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
+	snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
+	for(int j = 0; j < depth; j++)
+		snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
+	
+	char* pc_ptr = strtab + symtab[pc_index].st_name;
+	char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
+	snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call %s [%s ==> %s]", dnpc_ptr, pc_ptr, dnpc_ptr);
+	puts(ftrace_buf);
+	depth++;
+
 	return;
 }
 
 void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 	// ret instruction
 	if(rd == 0 && rs1 == 1 && offset == 0){
+		int pc_index = -1, dnpc_index = -1;
 		for(int i = 0; i < sym_num; i++){
-			if((symtab[i].st_info & 0xf ) !=  STT_FUNC) continue;
+			if((symtab[i].st_info & 0xf) != STT_FUNC) continue;
+			if(pc >= symtab[i].st_value && pc < symtab[i].st_value + symtab[i].st_size)
+				pc_index = i;
 			if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
-			{
-				memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
-				snprintf(ftrace_buf, 21,  "0x%016lx: ", pc);
-				for(int j = 0; j < depth; j++){
-					snprintf(ftrace_buf + strlen(ftrace_buf), 3, "  ");
-				}
-				char* ptr = strtab + symtab[i].st_name;
-				snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret [%s@0x%016lx]", ptr, dnpc);
-				puts(ftrace_buf);
-				depth--;
-				return;
-			}
+				dnpc_index = i;
+			if(pc_index != -1 && dnpc_index != -1) break;
 		}
+
+		memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
+		snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
+		depth--;
+		for(int j = 0; j < depth; j++)
+			snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
+	
+		char* pc_ptr = strtab + symtab[pc_index].st_name;
+		char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
+		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
+		puts(ftrace_buf);
 	}
 	check_jal(pc, dnpc, rd);
 }
