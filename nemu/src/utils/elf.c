@@ -134,7 +134,7 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 	if(rd != 1) return;
 	//may be a function call instruction
 	for(int i = 0; i < sym_num; i++){
-		if(symtab[i].st_info !=  STT_FUNC) continue;
+		if((symtab[i].st_info & 0xf) != STT_FUNC) continue;
 		if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
 		{
 			//puts("enter jal, match func");
@@ -157,7 +157,7 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 	// ret instruction
 	if(rd == 0 && rs1 == 1 && offset == 0){
 		for(int i = 0; i < sym_num; i++){
-			if(symtab[i].st_info !=  STT_FUNC) continue;
+			if((symtab[i].st_info & 0xf ) !=  STT_FUNC) continue;
 			if(dnpc >= symtab[i].st_value && dnpc < symtab[i].st_value + symtab[i].st_size)
 			{
 				memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
