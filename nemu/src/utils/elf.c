@@ -24,7 +24,7 @@ void init_elf(const char* elf_file){
 
 	Elf64_Ehdr elf_header;
 	ret = fread(&elf_header, sizeof(Elf64_Ehdr), 1, fp);
-	if(ret != sizeof(Elf64_Ehdr)){
+	if(ret != 1){
 		Log("Read elf header error ==> ret: %d", ret);
 		fclose(fp);
 		return;
@@ -32,7 +32,7 @@ void init_elf(const char* elf_file){
 
 	ret = fseek(fp, elf_header.e_shoff, SEEK_SET);
 	if(ret != 0){
-		Log("Seek section headers error");
+		Log("Seek section headers error ==> ret: %d", ret);
 		fclose(fp);
 		return;
 	}
@@ -43,8 +43,8 @@ void init_elf(const char* elf_file){
 		return;
 	}
 	ret = fread(section_headers, elf_header.e_shentsize, elf_header.e_shnum, fp);
-	if(ret != elf_header.e_shentsize){
-		Log("Read section headers error");
+	if(ret != elf_header.e_shnum){
+		Log("Read section headers error ==> ret: %d", ret);
 		fclose(fp);
 		free(section_headers);
 		return;
@@ -75,14 +75,14 @@ void init_elf(const char* elf_file){
 	}
 	ret = fseek(fp, section_headers[symtab_index].sh_offset, SEEK_SET);
 	if(ret != 0){
-		Log("Seek symbol table error");
+		Log("Seek symbol table error ==> ret: %d", ret);
 		fclose(fp);
 		free(section_headers);
 		return;
 	}
-	ret = fread(symtab, sym_num, sizeof(Elf64_Sym), fp);
+	ret = fread(symtab, sizeof(Elf64_Sym), sym_num, fp);
 	if(ret != sym_num){
-		Log("Read symbol table error");
+		Log("Read symbol table error ==> ret: %d", ret);
 		fclose(fp);
 		free(section_headers);
 		return;
@@ -97,14 +97,14 @@ void init_elf(const char* elf_file){
 	}
 	ret = fseek(fp, section_headers[strtab_index].sh_offset, SEEK_SET);
 	if(ret != 0){
-		Log("Seek string table error");
+		Log("Seek string table error ==> ret: %d", ret);
 		fclose(fp);
 		free(section_headers);
 		return;
 	}
-	ret = fread(strtab, str_size, 1, fp);
+	ret = fread(strtab, 1, str_size, fp);
 	if(ret != str_size){
-		Log("Read string table error");
+		Log("Read string table error ==> ret: %d", ret);
 		fclose(fp);
 		free(section_headers);
 		return;
@@ -113,7 +113,7 @@ void init_elf(const char* elf_file){
 	Log("The elf file is %s", elf_file);
 	ret = fclose(fp);
 	if(ret != 0){
-		Log("Close file pointer error");
+		Log("Close file pointer error ==> ret: %d", ret);
 		free(section_headers);
 		return;
 	}
