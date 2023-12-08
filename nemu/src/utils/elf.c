@@ -206,6 +206,7 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 		char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
 		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
 		puts(ftrace_buf);
+		return;
 	}
 	check_jal(pc, dnpc);
 }
