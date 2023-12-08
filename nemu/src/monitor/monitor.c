@@ -24,6 +24,8 @@ void init_device();
 void init_sdb();
 void init_disasm(const char *triple);
 
+void init_elf(const char* elf_file);
+
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "
@@ -92,6 +94,7 @@ static int parse_args(int argc, char *argv[]) {
         printf("\t-l,--log=FILE           output log to FILE\n");
         printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
         printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
+        printf("\t-e,--elf=ELF_FILE       run function trace with ELF_FILE\n");
         printf("\n");
         exit(0);
     }
@@ -125,6 +128,9 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
+
+  /* Initialize elf file*/
+  init_elf(elf_file);
 
   /* Initialize the simple debugger. */
   init_sdb();
