@@ -13,5 +13,5 @@ void init_elf(const char* elf_file){
 		Log("ELF file is not given");
 		return;
 	}
-	Log("read elf file: %s\n", elf_file);
+	Log("The elf file is %s", elf_file);
 }
