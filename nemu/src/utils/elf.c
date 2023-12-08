@@ -126,6 +126,7 @@ void init_elf(const char* elf_file){
 }
 
 void check_jal(word_t pc, word_t dnpc, int rd){
+	puts("enter checkjal");
 	if(rd != 1) return;
 	
 	//may be a function call instruction
@@ -150,6 +151,7 @@ void check_jal(word_t pc, word_t dnpc, int rd){
 
 void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 	// ret instruction
+	puts("enter checkjalr");
 	if(rd == 0 && rs1 == 1 && offset == 0){
 		for(int i = 0; i < sym_num; i++){
 			if(symtab[i].st_info !=  STT_FUNC) continue;
