@@ -175,7 +175,7 @@ void check_jal(word_t pc, word_t dnpc){
 	memset(ftrace_buf, 0, FTRACE_BUF_SIZE);
 	snprintf(ftrace_buf, 21, "0x%016lx: ", pc);
 	for(int j = 0; j < depth; j++)
-		snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
+		snprintf(ftrace_buf + strlen(ftrace_buf), 3, "  ");
 	
 	char* pc_ptr = strtab + symtab[pc_index].st_name;
 	char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
@@ -208,7 +208,7 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 		depth--;
 		while(strncmp(dnpc_ptr, ftrace[depth], strlen(dnpc_ptr)) != 0) depth--;
 		for(int j = 0; j < depth; j++)
-			snprintf(ftrace_buf + strlen(ftrace_buf), 3, " ");
+			snprintf(ftrace_buf + strlen(ftrace_buf), 3, "  ");
 	
 		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
 		puts(ftrace_buf);
