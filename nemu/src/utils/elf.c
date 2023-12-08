@@ -120,7 +120,6 @@ void init_elf(const char* elf_file){
 		return;
 	}
 
-	printf("str_offset: 0x%lx, str_size: 0x%lx\n", section_headers[strtab_index].sh_offset, section_headers[strtab_index].sh_size);
 
 	str_size = section_headers[strtab_index].sh_size;
 	if(str_size > STR_TAB_SIZE){
