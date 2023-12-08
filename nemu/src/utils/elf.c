@@ -126,6 +126,7 @@ void init_elf(const char* elf_file){
 }
 
 void check_jal(word_t pc, word_t dnpc, int rd){
+	puts("enter jal");
 	if(rd != 1) return;
 	//may be a function call instruction
 	for(int i = 0; i < sym_num; i++){
