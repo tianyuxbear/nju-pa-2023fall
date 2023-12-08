@@ -123,15 +123,12 @@ void init_elf(const char* elf_file){
 	}
 	free(section_headers);
 
-	for(int i = 0; i < sym_num; i++)
-		printf("%02d: value: 0x%016lx		type: %d\n", i, symtab[i].st_value, symtab[i].st_info);
-
 	return;
 }
 
 void check_jal(word_t pc, word_t dnpc, int rd){
-	//puts("enter jal");
 	if(rd != 1) return;
+	
 	//may be a function call instruction
 	for(int i = 0; i < sym_num; i++){
 		if((symtab[i].st_info & 0xf) != STT_FUNC) continue;
