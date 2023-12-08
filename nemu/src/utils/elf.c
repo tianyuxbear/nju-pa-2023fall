@@ -180,9 +180,12 @@ void check_jal(word_t pc, word_t dnpc){
 	char* pc_ptr = strtab + symtab[pc_index].st_name;
 	char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
 	snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call %s [%s ==> %s]", dnpc_ptr, pc_ptr, dnpc_ptr);
-	puts(ftrace_buf);
 	strncpy(ftrace[depth], pc_ptr, strlen(pc_ptr) + 1);
 	depth++;
+	IFDEF(CONFIG_FTRACE, puts(ftrace_buf));
+#ifdef CONFIG_FTRACE_COND
+	if(FTRACE_COND) {log_write("%s\n", ftrace_buf);};
+#endif
 
 	return;
 }
@@ -211,7 +214,12 @@ void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
 			snprintf(ftrace_buf + strlen(ftrace_buf), 3, "  ");
 	
 		snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "ret from %s [%s <== %s]", pc_ptr, dnpc_ptr, pc_ptr);
-		puts(ftrace_buf);
+
+		IFDEF(CONFIG_FTRACE, puts(ftrace_buf));
+#ifdef CONFIG_FTRACE_COND
+	if(FTRACE_COND) {log_write("%s\n", ftrace_buf);};
+#endif
+
 		return;
 	}
 	check_jal(pc, dnpc);
