@@ -1,11 +1,14 @@
 #include <common.h>
 #include <elf.h>
 
+#define SH_STR_TAB_SIZE 4096
+char shstrtab[SH_STR_TAB_SIZE];
+
 #define SYM_NUM 128
-#define STR_SIZE 1024
+#define STR_TAB_SIZE 4096
 
 Elf64_Sym symtab[SYM_NUM];
-char strtab[STR_SIZE];
+char strtab[STR_TAB_SIZE];
 int sym_num = 0, str_size = 0;
 
 #define FTRACE_BUF_SIZE 256
@@ -54,13 +57,39 @@ void init_elf(const char* elf_file){
 		return;
 	}
 
+	Elf64_Shdr shstr = section_headers[elf_header.e_shstrndx];
+	if(shstr.sh_size > SH_STR_TAB_SIZE){
+		Log("SH string table too long");
+		fclose(fp);
+		free(section_headers);
+		return;
+	}
+	ret = fseek(fp, shstr.sh_offset, SEEK_SET);
+	if(ret != 0){
+		Log("Seek section headers string error ==> ret: %d", ret);
+		fclose(fp);
+		free(section_headers);
+		return;
+	}
+	ret = fread(shstrtab, 1, shstr.sh_size, fp);
+	if(ret != shstr.sh_size){
+		Log("Read section headers string error ==> ret: %d", ret);
+		fclose(fp);
+		free(section_headers);
+		return;
+	}
+
 	int symtab_index = -1, strtab_index = -1;
 	for(int i = 0; i < elf_header.e_shnum; i++){
-		if(section_headers[i].sh_type == SHT_SYMTAB){
+		if(i == elf_header.e_shstrndx) continue;
+		Elf64_Shdr temp = section_headers[i];
+		if(strncmp(".symtab", shstrtab + temp.sh_name, strlen(".symtab")) == 0){
 			symtab_index = i;
-		}else if(section_headers[i].sh_type == SHT_STRTAB){
+		}
+		if(strncmp(".strtab", shstrtab + temp.sh_name, strlen(".strtab")) == 0){
 			strtab_index = i;
 		}
+		if(symtab_index != -1 && strtab_index != -1) break;
 	}
 
 	if(symtab_index == -1 || strtab_index  == -1){
@@ -95,7 +124,7 @@ void init_elf(const char* elf_file){
 	printf("str_offset: 0x%lx, str_size: 0x%lx\n", section_headers[strtab_index].sh_offset, section_headers[strtab_index].sh_size);
 
 	str_size = section_headers[strtab_index].sh_size;
-	if(str_size > STR_SIZE){
+	if(str_size > STR_TAB_SIZE){
 		Log("String table too long ==> %d", str_size);
 		fclose(fp);
 		free(section_headers);
