@@ -189,7 +189,7 @@ void check_jal(word_t pc, word_t dnpc){
 	return;
 }
 
-void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, int offset){
+void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, sword_t offset){
 	// ret instruction
 	if(rd == 0 && rs1 == 1 && offset == 0){
 		int pc_index = -1, dnpc_index = -1;
