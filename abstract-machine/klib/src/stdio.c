@@ -5,10 +5,53 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-int handle_int(char* str, int num);
+
+
+static char num_str[25];
+int handle_int(int num);
 
 int printf(const char *format, ...) {
-  panic("Not implemented");
+  va_list ap;
+  int d;
+  char* s;
+
+  int nbyte = 0, bytes = 0;
+  va_start(ap, format);
+  while(*format != '\0'){
+    if(*format == '%'){
+      format++;
+      switch(*format)
+      {
+        case 's': 
+          s = va_arg(ap, char*);
+          bytes = strlen(s);
+          for(int i = 0; i < bytes; i++, s++)
+            putch(*s);
+          format++;
+          nbyte += bytes;
+          break;
+        case 'd':
+          d = va_arg(ap, int);
+          bytes = handle_int(d);
+          for(int i = 0; i < bytes; i++)
+            putch(num_str[i]);
+          format++;
+          nbyte += bytes;
+          break;
+        default:
+          assert(0);
+          break;
+      }
+    }else{
+      putch(*format);
+      format++;
+      nbyte++;
+    }
+  }
+
+  va_end(ap);
+
+  return nbyte;
 }
 
 int sprintf(char *str, const char *format, ...) {
@@ -33,7 +76,8 @@ int sprintf(char *str, const char *format, ...) {
           break;
         case 'd':
           d = va_arg(ap, int);
-          bytes = handle_int(str, d);
+          bytes = handle_int(d);
+          strncpy(str, num_str, bytes);
           str += bytes;
           format++;
           nbyte += bytes;
@@ -67,8 +111,8 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 }
 
 
-int handle_int(char* str, int num){
-  char num_str[15];
+int handle_int(int num){
+  memset(num_str, 0, sizeof(num_str));
   int index = 0;
 
   int is_negative = 0;
@@ -93,7 +137,6 @@ int handle_int(char* str, int num){
   num_str[index] = '\0';
 
   int bytes = strlen(num_str);
-  strncpy(str, num_str,bytes);
 
   return bytes;
 }
