@@ -24,6 +24,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for(int i = 0; i < NR_GPR; i++){
     if(cpu.gpr[i] != ref_r->gpr[i]){
       Log("dut not match ref at: 0x%016lx", pc);
+      Log("ref reg: %s  value: %lu", regs[i], ref_r->gpr[i]);
       return false;
     }
   }
