@@ -17,8 +17,18 @@
 #include <cpu/difftest.h>
 #include "../local-include/reg.h"
 
+#define NR_GPR MUXDEF(CONFIG_RVE, 16, 32)
+
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  return false;
+
+  for(int i = 0; i < NR_GPR; i++){
+    if(cpu.gpr[i] != ref_r->gpr[i]){
+      Log("dut not match ref at: 0x%016lx", pc);
+      return false;
+    }
+  }
+
+  return true;
 }
 
 void isa_difftest_attach() {
