@@ -18,7 +18,7 @@ int    vsnprintf (char *str, size_t size, const char *format, va_list ap);
 int printf(const char *format, ...) {
   va_list ap;
   va_start(ap, format);
-  size_t size = 1ul << 31 - 1;
+  size_t size = (1ul << 31) - 1;
   int nbyte = vsnprintf(NULL, size, format, ap);
   va_end(ap);
   return nbyte;
@@ -27,7 +27,7 @@ int printf(const char *format, ...) {
 int sprintf(char *str, const char *format, ...) {
   va_list ap;
   va_start(ap, format);
-  size_t size = 1ul << 31 - 1;
+  size_t size = (1ul << 31) - 1;
   int nbyte = vsnprintf(str, size, format, ap);
   va_end(ap);
   return nbyte;
@@ -42,7 +42,7 @@ int snprintf(char *str, size_t size, const char *format, ...) {
 }
 
 int vsprintf(char *str, const char *format, va_list ap) {
-  size_t size = 1ul << 31 - 1;
+  size_t size = (1ul << 31) - 1;
   int nbyte = vsnprintf(str, size, format, ap);
   return nbyte;
 }
