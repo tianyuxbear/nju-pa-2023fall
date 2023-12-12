@@ -228,6 +228,7 @@ typedef struct operator{
 word_t find_primary_operator(word_t l, word_t r){
   int op_count = 0, size = r - l + 1;
   Operator operators[size];
+  memset(operators, 0, sizeof(operators));
   int token_lb_num = 0;
   for(int i = l; i < r + 1; i++){
      switch (tokens[i].type)

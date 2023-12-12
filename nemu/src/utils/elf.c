@@ -184,7 +184,9 @@ void check_jal(word_t pc, word_t dnpc){
 	char* pc_ptr = strtab + symtab[pc_index].st_name;
 	char* dnpc_ptr = strtab + symtab[dnpc_index].st_name;
 	snprintf(ftrace_buf + strlen(ftrace_buf), FTRACE_BUF_SIZE - strlen(ftrace_buf), "call %s [%s ==> %s]", dnpc_ptr, pc_ptr, dnpc_ptr);
-	strncpy(ftrace[depth], pc_ptr, strlen(pc_ptr) + 1);
+	size_t bytes = strnlen(pc_ptr, 32);
+	strncpy(ftrace[depth], pc_ptr, bytes);
+	ftrace[depth][bytes] = '\0'; 
 	depth++;
 	IFDEF(CONFIG_FTRACE, puts(ftrace_buf));
 #ifdef CONFIG_FTRACE_COND
