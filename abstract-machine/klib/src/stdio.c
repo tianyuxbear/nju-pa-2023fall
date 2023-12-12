@@ -91,6 +91,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           format++;
           break;
         default:
+          putch(*format);
           assert(0);
           break;
       }
