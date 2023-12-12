@@ -14,6 +14,8 @@ int sym_num = 0, str_size = 0;
 #define FTRACE_BUF_SIZE 256
 char ftrace_buf[FTRACE_BUF_SIZE];
 
+static bool has_elf_file = false;
+
 void init_elf(const char* elf_file){
 	if(elf_file == NULL) {
 		Log("ELF file is not given");
@@ -152,6 +154,7 @@ void init_elf(const char* elf_file){
 	}
 	free(section_headers);
 
+	has_elf_file = true;
 	return;
 }
 
@@ -160,6 +163,8 @@ char ftrace[MAX_DEPTH][32];
 int depth = 0;
 
 void check_jal(word_t pc, word_t dnpc){
+	if(!has_elf_file) return;
+
 	//may be a function call instruction
 	int pc_index = -1, dnpc_index = -1;
 	for(int i = 0; i < sym_num; i++){
@@ -190,6 +195,8 @@ void check_jal(word_t pc, word_t dnpc){
 }
 
 void check_jalr(word_t pc, word_t dnpc, int rd, int rs1, sword_t offset){
+	if(!has_elf_file) return;
+
 	// ret instruction
 	if(rd == 0 && rs1 == 1 && offset == 0){
 		int pc_index = -1, dnpc_index = -1;
