@@ -107,7 +107,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           break;
         case '0':
           prefix_char = '0';
-          printf("before");
+          putch('b');putch('f');
           handle_prefix(format);
           format--;
           break;
