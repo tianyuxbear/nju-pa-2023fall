@@ -174,7 +174,7 @@ void handle_prefix(const char* format){
   for(int i = 0; i < index; i++){
     prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
   }
-  
+  printf("%d", prefix_num);
   has_padding = true;
 }
 
