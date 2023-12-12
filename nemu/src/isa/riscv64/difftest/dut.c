@@ -29,6 +29,12 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     }
   }
 
+  if(cpu.pc != ref_r->pc){
+    Log("dut not match ref at: 0x%016lx", pc);
+    Log("ref reg: %s  value: 0x%016lx", "pc", ref_r->pc);
+    return false;
+  }
+
   return true;
 }
 
