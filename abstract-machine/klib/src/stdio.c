@@ -108,6 +108,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
         case '0':
           prefix_char = '0';
           handle_prefix(format);
+          printf("handle over\n");
           format--;
           break;
         default:
