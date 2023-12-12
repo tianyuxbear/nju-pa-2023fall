@@ -5,9 +5,15 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+static bool has_padding = false;
+
 static char int_str[30];
 int handle_int(int num);
 
+static int prefix_num = 0;
+static char prefix_char = '\0';
+static char prefix_num_str[10];
+void handle_prefix(const char* format);
 
 int    printf    (const char *format, ...);
 int    sprintf   (char *str, const char *format, ...);
@@ -56,7 +62,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 
   while(*format != '\0'){
     if(nbyte == maxbytes) break;
-    if(*format == '%'){
+    if(*format == '%' || has_padding){
       format++;
       switch(*format)
       {
@@ -84,14 +90,27 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             str += bytes;
             nbyte += bytes;
           }else{
+            int padding = prefix_num - bytes;
+            if(prefix_char != '\0' && padding > 0){
+              for(int i = 0; i < padding; i++) putch(prefix_char);
+              nbyte += padding;
+
+              has_padding = false;
+              prefix_num = 0;
+              prefix_char = '\0';
+            }
             for(int i = 0; i < bytes; i++)
               putch(int_str[i]);
             nbyte += bytes;
           }
           format++;
           break;
+        case '0':
+          prefix_char = '0';
+          handle_prefix(format);
+          format--;
+          break;
         default:
-          putch(*format);
           assert(0);
           break;
       }
@@ -139,6 +158,22 @@ int handle_int(int num){
   int bytes = strlen(int_str);
 
   return bytes;
+}
+
+void handle_prefix(const char* format){
+  memset(prefix_num_str, 0, sizeof(prefix_num_str));
+  int index = 0;
+
+  format++;
+  while(*format >= '0' && *format <= '9'){
+    prefix_num_str[index++] = *format++;
+  }
+
+  for(int i = 0; i < index; i++){
+    prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
+  }
+  
+  has_padding = true;
 }
 
 #endif
