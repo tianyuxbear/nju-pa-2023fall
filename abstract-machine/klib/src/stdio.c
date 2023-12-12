@@ -107,7 +107,6 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           break;
         case '0':
           prefix_char = '0';
-          putch('b');putch('f');
           handle_prefix(format);
           format--;
           break;
@@ -165,6 +164,7 @@ void handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
 
+  printf("entry handle");
   format++;
   while(*format >= '0' && *format <= '9'){
     prefix_num_str[index++] = *format++;
