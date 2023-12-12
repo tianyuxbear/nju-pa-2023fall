@@ -155,9 +155,9 @@ static int decode_exec(Decode *s) {
 
   // =========================================== RV64M instructions(RV64M only) =================================================
   INSTPAT("0000001 ????? ????? 000 ????? 01110 11", mulw   , R, R(rd) = SEXT(src1 * src2, 32));
-  INSTPAT("0000001 ????? ????? 100 ????? 01110 11", divw   , R, R(rd) = SEXT(src1, 32) / SEXT(src2, 32));
+  INSTPAT("0000001 ????? ????? 100 ????? 01110 11", divw   , R, R(rd) = (sword_t)SEXT(src1, 32) / (sword_t)SEXT(src2, 32));
   INSTPAT("0000001 ????? ????? 101 ????? 01110 11", divuw  , R, R(rd) = SEXT(BITS(src1, 31, 0) / BITS(src2, 31, 0), 32));
-  INSTPAT("0000001 ????? ????? 110 ????? 01110 11", remw   , R, R(rd) = SEXT(src1, 32) % SEXT(src2, 32));
+  INSTPAT("0000001 ????? ????? 110 ????? 01110 11", remw   , R, R(rd) = (sword_t)SEXT(src1, 32) % (sword_t)SEXT(src2, 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(rd) = SEXT(BITS(src1, 31, 0) % BITS(src2, 31, 0), 32));
 
   //============================================ special instructions(nemu use) =================================================
