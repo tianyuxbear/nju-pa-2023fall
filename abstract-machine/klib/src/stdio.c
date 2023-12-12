@@ -164,12 +164,13 @@ void handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
 
-  printf("entry handle");
   format++;
   while(*format >= '0' && *format <= '9'){
+    putch(*format);
     prefix_num_str[index++] = *format++;
   }
 
+  printf("left while");
   for(int i = 0; i < index; i++){
     prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
   }
