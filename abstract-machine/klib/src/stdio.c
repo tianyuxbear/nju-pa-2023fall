@@ -8,7 +8,8 @@
 static bool has_padding = false;
 
 static char int_str[30];
-int handle_int(int num);
+int handle_dec(int num);
+int handle_hex(int num);
 
 static int prefix_num = 0;
 static char prefix_char = ' ';
@@ -57,7 +58,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
   int nbyte = 0, bytes = 0;
   size_t maxbytes = size - 1;
   
-  int d;
+  int d, x;
   char* s;
 
   while(*format != '\0'){
@@ -83,7 +84,31 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           break;
         case 'd':
           d = va_arg(ap, int);
-          bytes = handle_int(d);
+          bytes = handle_dec(d);
+          if(str != NULL){
+            bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
+            strncpy(str, int_str, bytes);
+            str += bytes;
+            nbyte += bytes;
+          }else{
+            int padding = prefix_num - bytes;
+            if(padding > 0){
+              for(int i = 0; i < padding; i++) putch(prefix_char);
+              nbyte += padding;
+
+              has_padding = false;
+              prefix_num = 0;
+              prefix_char = '\0';
+            }
+            for(int i = 0; i < bytes; i++)
+              putch(int_str[i]);
+            nbyte += bytes;
+          }
+          format++;
+          break;
+        case 'x':
+          x = va_arg(ap, int);
+          bytes = handle_hex(x);
           if(str != NULL){
             bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
             strncpy(str, int_str, bytes);
@@ -130,7 +155,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 }
 
 
-int handle_int(int num){
+int handle_dec(int num){
   memset(int_str, 0, sizeof(int_str));
   int index = 0;
 
@@ -147,6 +172,31 @@ int handle_int(int num){
   }
   if(index == 0) int_str[index++] = '0';
   if(is_negative) int_str[index++] = '-';
+
+  for(int i = 0, j = index - 1; i < j; i++, j--){
+    char tmp = int_str[i];
+    int_str[i] = int_str[j];
+    int_str[j] = tmp;
+  }
+  int_str[index] = '\0';
+
+  int bytes = strlen(int_str);
+
+  return bytes;
+}
+
+int handle_hex(int num){
+  memset(int_str, 0, sizeof(int_str));
+  int index = 0;
+
+  uint32_t hex = (uint32_t)num;
+
+  while(hex != 0){
+    char byte = num % 16;
+    int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
+    hex /= 16;
+  }
+  if(index == 0) int_str[index++] = '0';
 
   for(int i = 0, j = index - 1; i < j; i++, j--){
     char tmp = int_str[i];
