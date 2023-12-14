@@ -38,6 +38,7 @@ void vaddr_write(vaddr_t addr, int len, word_t data) {
   memset(wtracebuf, 0, sizeof(wtracebuf));
   snprintf(wtracebuf, sizeof(wtracebuf), "mem write ===> addr: " FMT_WORD "    len: %d    write data: %lu", addr, len, data);
   IFDEF(CONFIG_MTRACE, puts(wtracebuf));
+  if(addr == 0x80002a58) printf("mem write ===> addr: " FMT_WORD "    len: %d    write data: 0x%016lx\n", addr, len, data);
 #ifdef CONFIG_MTRACE_COND
   if(MTRACE_COND) {log_write("%s\n", wtracebuf);}
 #endif
