@@ -107,30 +107,30 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           format++;
           break;
         case 'x':
-          // putch('a');putch('a');putch('a');
-          // x = va_arg(ap, int);
-          // bytes = handle_hex(x);
-          // if(str != NULL){
-          //   bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
-          //   strncpy(str, int_str, bytes);
-          //   str += bytes;
-          //   nbyte += bytes;
-          // }else{
-          //   int padding = prefix_num - bytes;
-          //   if(padding > 0){
-          //     for(int i = 0; i < padding; i++) putch(prefix_char);
-          //     nbyte += padding;
+          putch('a');putch('a');putch('a');
+          x = va_arg(ap, int);
+          bytes = handle_hex(x);
+          if(str != NULL){
+            bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
+            strncpy(str, int_str, bytes);
+            str += bytes;
+            nbyte += bytes;
+          }else{
+            int padding = prefix_num - bytes;
+            if(padding > 0){
+              for(int i = 0; i < padding; i++) putch(prefix_char);
+              nbyte += padding;
 
-          //     has_padding = false;
-          //     prefix_num = 0;
-          //     prefix_char = ' ';
-          //   }
-          //   for(int i = 0; i < bytes; i++)
-          //     putch(int_str[i]);
-          //   nbyte += bytes;
-          //   putch('b');putch('b');putch('b');
-          // }
-          // format++;
+              has_padding = false;
+              prefix_num = 0;
+              prefix_char = ' ';
+            }
+            for(int i = 0; i < bytes; i++)
+              putch(int_str[i]);
+            nbyte += bytes;
+            putch('b');putch('b');putch('b');
+          }
+          format++;
           break;
         case '0':
           prefix_char = '0';
