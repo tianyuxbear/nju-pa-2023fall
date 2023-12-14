@@ -62,7 +62,7 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
   memset(dtrace_buf, 0, sizeof(dtrace_buf));
-  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device read: %s addr: 0x%08x", map->name, addr);
+  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device read: %s\taddr: 0x%08x", map->name, addr);
   IFDEF(CONFIG_DTRACE, puts(dtrace_buf));
   return ret;
 }
@@ -74,6 +74,6 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
   memset(dtrace_buf, 0, sizeof(dtrace_buf));
-  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device write: %s addr: 0x%08x", map->name, addr);
+  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device write: %s\taddr: 0x%08x", map->name, addr);
   IFDEF(CONFIG_DTRACE, puts(dtrace_buf));
 }
