@@ -206,7 +206,6 @@ int handle_hex(int num){
     int_str[j] = tmp;
   }
   int_str[index] = '\0';
-  printf("%s\n", int_str);
   int bytes = strlen(int_str);
 
   return bytes;
