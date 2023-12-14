@@ -98,7 +98,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 
               has_padding = false;
               prefix_num = 0;
-              prefix_char = '\0';
+              prefix_char = ' ';
             }
             for(int i = 0; i < bytes; i++)
               putch(int_str[i]);
@@ -122,10 +122,11 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
 
               has_padding = false;
               prefix_num = 0;
-              prefix_char = '\0';
+              prefix_char = ' ';
             }
             for(int i = 0; i < bytes; i++)
               putch(int_str[i]);
+            putch('\n');
             nbyte += bytes;
           }
           format++;
