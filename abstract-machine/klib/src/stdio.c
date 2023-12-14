@@ -58,6 +58,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
   int nbyte = 0, bytes = 0;
   size_t maxbytes = size - 1;
   
+  char c;
   int d, x;
   char* s;
 
@@ -79,6 +80,18 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             for(int i = 0; i < bytes; i++, s++)
               putch(*s);
             nbyte += bytes;
+          }
+          format++;
+          break;
+        case 'c':
+          c = (char) va_arg(ap, int);
+          if(str != NULL){
+            strncpy(str, &c, 1);
+            str++;
+            nbyte++;
+          }else{
+            putch(c);
+            nbyte++;
           }
           format++;
           break;
