@@ -58,7 +58,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
   int nbyte = 0, bytes = 0;
   size_t maxbytes = size - 1;
   
-  int d, x;
+  int d;
   char* s;
 
   while(*format != '\0'){
@@ -106,30 +106,30 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           }
           format++;
           break;
-        case 'x':
-          x = va_arg(ap, int);
-          bytes = handle_hex(x);
-          if(str != NULL){
-            bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
-            strncpy(str, int_str, bytes);
-            str += bytes;
-            nbyte += bytes;
-          }else{
-            int padding = prefix_num - bytes;
-            if(padding > 0){
-              for(int i = 0; i < padding; i++) putch(prefix_char);
-              nbyte += padding;
+        //case 'x':
+          // x = va_arg(ap, int);
+          // bytes = handle_hex(x);
+          // if(str != NULL){
+          //   bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
+          //   strncpy(str, int_str, bytes);
+          //   str += bytes;
+          //   nbyte += bytes;
+          // }else{
+          //   int padding = prefix_num - bytes;
+          //   if(padding > 0){
+          //     for(int i = 0; i < padding; i++) putch(prefix_char);
+          //     nbyte += padding;
 
-              has_padding = false;
-              prefix_num = 0;
-              prefix_char = ' ';
-            }
-            for(int i = 0; i < bytes; i++)
-              putch(int_str[i]);
-            nbyte += bytes;
-          }
-          format++;
-          break;
+          //     has_padding = false;
+          //     prefix_num = 0;
+          //     prefix_char = ' ';
+          //   }
+          //   for(int i = 0; i < bytes; i++)
+          //     putch(int_str[i]);
+          //   nbyte += bytes;
+          // }
+          // format++;
+          //break;
         case '0':
           prefix_char = '0';
           int offset = handle_prefix(format);
@@ -187,28 +187,28 @@ int handle_dec(int num){
   return bytes;
 }
 
-int handle_hex(int num){
-  memset(int_str, 0, sizeof(int_str));
-  int index = 0;
+// int handle_hex(int num){
+//   memset(int_str, 0, sizeof(int_str));
+//   int index = 0;
 
-  uint32_t hex = (uint32_t)num;
-  while(hex != 0){
-    char byte = hex % 16;
-    int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
-    hex /= 16;
-  }
-  if(index == 0) int_str[index++] = '0';
+//   uint32_t hex = (uint32_t)num;
+//   while(hex != 0){
+//     char byte = hex % 16;
+//     int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
+//     hex /= 16;
+//   }
+//   if(index == 0) int_str[index++] = '0';
 
-  for(int i = 0, j = index - 1; i < j; i++, j--){
-    char tmp = int_str[i];
-    int_str[i] = int_str[j];
-    int_str[j] = tmp;
-  }
-  int_str[index] = '\0';
-  int bytes = strlen(int_str);
+//   for(int i = 0, j = index - 1; i < j; i++, j--){
+//     char tmp = int_str[i];
+//     int_str[i] = int_str[j];
+//     int_str[j] = tmp;
+//   }
+//   int_str[index] = '\0';
+//   int bytes = strlen(int_str);
 
-  return bytes;
-}
+//   return bytes;
+// }
 
 int handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
