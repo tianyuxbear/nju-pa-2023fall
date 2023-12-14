@@ -136,6 +136,8 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           format += offset - 1;
           break;
         default:
+          printf("unimplemented char:");
+          putch(*format);
           assert(0);
           break;
       }
