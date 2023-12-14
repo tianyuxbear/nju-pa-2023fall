@@ -9,7 +9,7 @@ static bool has_padding = false;
 
 static char int_str[30];
 int handle_dec(int num);
-int handle_hex(int num);
+//int handle_hex(int num);
 
 static int prefix_num = 0;
 static char prefix_char = ' ';
@@ -106,30 +106,6 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           }
           format++;
           break;
-        //case 'x':
-          // x = va_arg(ap, int);
-          // bytes = handle_hex(x);
-          // if(str != NULL){
-          //   bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
-          //   strncpy(str, int_str, bytes);
-          //   str += bytes;
-          //   nbyte += bytes;
-          // }else{
-          //   int padding = prefix_num - bytes;
-          //   if(padding > 0){
-          //     for(int i = 0; i < padding; i++) putch(prefix_char);
-          //     nbyte += padding;
-
-          //     has_padding = false;
-          //     prefix_num = 0;
-          //     prefix_char = ' ';
-          //   }
-          //   for(int i = 0; i < bytes; i++)
-          //     putch(int_str[i]);
-          //   nbyte += bytes;
-          // }
-          // format++;
-          //break;
         case '0':
           prefix_char = '0';
           int offset = handle_prefix(format);
