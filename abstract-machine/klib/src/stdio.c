@@ -107,6 +107,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           format++;
           break;
         case 'x':
+          putch('a');putch('a');putch('a');
           x = va_arg(ap, int);
           bytes = handle_hex(x);
           if(str != NULL){
@@ -124,12 +125,10 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
               prefix_num = 0;
               prefix_char = ' ';
             }
-            putch('a');putch('a');putch('a');
             for(int i = 0; i < bytes; i++)
               putch(int_str[i]);
-            putch('b');putch('b');putch('b');
-            putch('\n');
             nbyte += bytes;
+            putch('b');putch('b');putch('b');
           }
           format++;
           break;
