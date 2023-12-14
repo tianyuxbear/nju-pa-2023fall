@@ -11,9 +11,9 @@ static char int_str[30];
 int handle_int(int num);
 
 static int prefix_num = 0;
-static char prefix_char = '\0';
+static char prefix_char = ' ';
 static char prefix_num_str[10];
-void handle_prefix(const char* format);
+int handle_prefix(const char* format);
 
 int    printf    (const char *format, ...);
 int    sprintf   (char *str, const char *format, ...);
@@ -91,7 +91,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             nbyte += bytes;
           }else{
             int padding = prefix_num - bytes;
-            if(prefix_char != '\0' && padding > 0){
+            if(padding > 0){
               for(int i = 0; i < padding; i++) putch(prefix_char);
               nbyte += padding;
 
@@ -107,8 +107,8 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           break;
         case '0':
           prefix_char = '0';
-          handle_prefix(format);
-          format--;
+          int offset = handle_prefix(format);
+          format += offset - 1;
           break;
         default:
           assert(0);
@@ -160,22 +160,21 @@ int handle_int(int num){
   return bytes;
 }
 
-void handle_prefix(const char* format){
+int handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
 
-  format++;
   while(*format >= '0' && *format <= '9'){
-    putch(*format);
     prefix_num_str[index++] = *format++;
   }
 
-  printf("left while");
   for(int i = 0; i < index; i++){
     prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
   }
-  printf("%s", prefix_num_str);
+
   has_padding = true;
+
+  return index;
 }
 
 #endif
