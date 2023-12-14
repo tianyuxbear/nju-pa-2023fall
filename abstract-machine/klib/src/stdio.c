@@ -192,7 +192,7 @@ int handle_hex(int num){
   int index = 0;
 
   uint32_t hex = (uint32_t)num;
-
+  printf("parse hex: %d", hex);
   while(hex != 0){
     char byte = num % 16;
     int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
