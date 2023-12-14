@@ -171,7 +171,15 @@ config FTRACE_COND
   string "Only log function call when the condition is true"
   default "false"
 
+config DTRACE
+  depends on TRACE
+  bool "Enable device access call tracer"
+  default n
 
+config DTRACE_COND
+  depends on DTRACE
+  string "Only log device access call when the condition is true"
+  default "false"
 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF

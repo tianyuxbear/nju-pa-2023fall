@@ -20,6 +20,9 @@
 
 #define IO_SPACE_MAX (2 * 1024 * 1024)
 
+#define DEVICE_TRACE_BUF_SIZE 128
+static char dtrace_buf[DEVICE_TRACE_BUF_SIZE];
+
 static uint8_t *io_space = NULL;
 static uint8_t *p_space = NULL;
 
@@ -58,6 +61,9 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
+  memset(dtrace_buf, 0, sizeof(dtrace_buf));
+  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device read: %s addr: 0x%08x\n", map->name, addr);
+  IFDEF(CONFIG_DTRACE, puts(dtrace_buf));
   return ret;
 }
 
@@ -67,4 +73,7 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
+  memset(dtrace_buf, 0, sizeof(dtrace_buf));
+  snprintf(dtrace_buf, sizeof(dtrace_buf) - 1, "device write: %s addr: 0x%08x\n", map->name, addr);
+  IFDEF(CONFIG_DTRACE, puts(dtrace_buf));
 }
