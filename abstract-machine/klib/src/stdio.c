@@ -195,7 +195,6 @@ int handle_hex(int num){
   while(hex != 0){
     char byte = hex % 16;
     int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
-    putch(int_str[index-1]);
     hex /= 16;
   }
   if(index == 0) int_str[index++] = '0';
