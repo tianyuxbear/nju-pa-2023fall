@@ -55,6 +55,7 @@ enum {
 
 #define ECALL(dnpc) do{  bool success; \
                          word_t NO = isa_reg_str2val("$a7", &success); \
+                         printf("NO ==> 0x%016lx\n", NO); \
                          dnpc = isa_raise_intr(NO, s->pc); \
                          isa_reg_display(); \
                                     } while(0)
