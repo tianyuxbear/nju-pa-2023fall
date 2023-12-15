@@ -60,6 +60,7 @@ static char etrace_buf[ETRACE_BUF_SIZE];
 #define ECALL(dnpc) do{  bool success; \
                          word_t NO = isa_reg_str2val("$a7", &success); \
                          dnpc = isa_raise_intr(NO, s->pc); \
+                         isa_reg_display(); \
                          memset(etrace_buf, 0, ETRACE_BUF_SIZE); \
                          snprintf(etrace_buf, ETRACE_BUF_SIZE, "ecall occurs ==> pc: 0x%016lx, No: 0x%016lx", s->pc, NO); \
                          IFDEF(CONFIG_ETRACE, puts(etrace_buf)); \
