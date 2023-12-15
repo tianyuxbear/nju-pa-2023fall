@@ -14,11 +14,11 @@ Context* __am_irq_handle(Context *c) {
       default: ev.event = EVENT_ERROR; break;
     }
     for(int i = 0; i < 32; i++){
-      printf("x%d ==> %lu\n", i, c->gpr[i]);
+      printf("x%d ==> 0x%08x\n", i, c->gpr[i]);
     }
-    printf("mcause ==> %lu\n", c->mcause);
-    printf("mstatus ==> %lu\n", c->mstatus);
-    printf("mepc ==> %lu\n", c->mepc);
+    printf("mcause ==> 0x%08x\n", c->mcause);
+    printf("mstatus ==> 0x%08x\n", c->mstatus);
+    printf("mepc ==> 0x%08x\n", c->mepc);
     c = user_handler(ev, c);
     assert(c != NULL);
   }
