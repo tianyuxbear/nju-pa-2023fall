@@ -23,15 +23,33 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
 
   for(int i = 0; i < NR_GPR; i++){
     if(cpu.gpr[i] != ref_r->gpr[i]){
-      Log("dut not match ref at: 0x%016lx", pc);
-      Log("ref reg: %s  value: %lu", regs[i], ref_r->gpr[i]);
+      Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, regs[i], cpu.gpr[i], ref_r->gpr[i]);
       return false;
     }
   }
 
+  if(cpu.csr.mstatus != ref_r->csr.mstatus){
+    Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, "mstatus", cpu.csr.mstatus, ref_r->csr.mstatus);
+    return false;
+  }
+
+  if(cpu.csr.mcause != ref_r->csr.mcause){
+    Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, "mcause", cpu.csr.mcause, ref_r->csr.mcause);
+    return false;
+  }
+
+  if(cpu.csr.mtvec != ref_r->csr.mtvec){
+    Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, "mtvec", cpu.csr.mtvec, ref_r->csr.mtvec);
+    return false;
+  }
+
+  if(cpu.csr.mepc != ref_r->csr.mepc){
+    Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, "mepc", cpu.csr.mepc, ref_r->csr.mepc);
+    return false;
+  }
+
   if(cpu.pc != ref_r->pc){
-    Log("dut not match ref at: 0x%016lx", pc);
-    Log("ref reg: %s  value: 0x%016lx", "pc", ref_r->pc);
+    Log("difftest fail at 0x%016lx ==> for %s, expect %lu, but get %lu\n", pc, "pc", cpu.pc, ref_r->pc);
     return false;
   }
 
