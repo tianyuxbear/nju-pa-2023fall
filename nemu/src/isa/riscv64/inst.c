@@ -33,6 +33,7 @@ enum {
   TYPE_N // none
 };
 
+
 #define src1R() do { *src1 = R(rs1); } while (0)
 #define src2R() do { *src2 = R(rs2); } while (0)
 
@@ -51,11 +52,17 @@ enum {
                                  BITS(i, 19, 12) << 12 | \
                                  BITS(i, 20, 20) << 11 | \
                                  BITS(i, 30, 21) << 1), 21); } while(0)
-                        
+
+
+#define ETRACE_BUF_SIZE 128
+static char etrace_buf[ETRACE_BUF_SIZE];
 
 #define ECALL(dnpc) do{  bool success; \
                          word_t NO = isa_reg_str2val("$a7", &success); \
                          dnpc = isa_raise_intr(NO, s->pc); \
+                         memset(etrace_buf, 0, ETRACE_BUF_SIZE); \
+                         snprintf(etrace_buf, ETRACE_BUF_SIZE, "ecall occurs ==> pc: 0x%016lx, No: 0x%016lx", s->pc, NO); \
+                         IFDEF(CONFIG_ETRACE, puts(etrace_buf)); \
                                     } while(0)
 
 

@@ -173,12 +173,22 @@ config FTRACE_COND
 
 config DTRACE
   depends on TRACE
-  bool "Enable device access call tracer"
+  bool "Enable device access tracer"
   default n
 
 config DTRACE_COND
   depends on DTRACE
-  string "Only log device access call when the condition is true"
+  string "Only log device access when the condition is true"
+  default "false"
+
+config ETRACE
+  depends on TRACE
+  bool "Enable exception tracer"
+  default n
+
+config ETRACE_COND
+  depends on ETRACE
+  string "Only log exception when the condition is true"
   default "false"
 
 config DIFFTEST
