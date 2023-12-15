@@ -58,6 +58,9 @@ enum {
                          dnpc = isa_raise_intr(NO, s->pc); \
                                     } while(0)
 
+
+#define CSR_MEPC 0x341
+
 static word_t* csr_addr(word_t imm){
   switch (imm)
   {
@@ -200,9 +203,8 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(rd) = SEXT(BITS(src1, 31, 0) % BITS(src2, 31, 0), 32));
 
 
-  //============================================ 
-
-
+  //============================================ RV32/64 privileged instructions ================================================
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC));
 
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
