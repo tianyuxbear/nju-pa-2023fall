@@ -19,8 +19,8 @@ Context* __am_irq_handle(Context *c) {
     // printf("mcause ==> 0x%08x", c->mcause); 
     // printf("mstatus ==> 0x%08x", c->mstatus);
     // printf("mepc ==> 0x%08x", c->mepc);
-    c = user_handler(ev, c);
     printf("hello world");
+    c = user_handler(ev, c);
     assert(c != NULL);
   }
 
