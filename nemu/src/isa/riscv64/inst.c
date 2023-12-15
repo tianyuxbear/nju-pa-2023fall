@@ -56,6 +56,7 @@ enum {
 #define ECALL(dnpc) do{  bool success; \
                          word_t NO = isa_reg_str2val("$a7", &success); \
                          dnpc = isa_raise_intr(NO, s->pc); \
+                         isa_reg_display(); \
                                     } while(0)
 
 
