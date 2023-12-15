@@ -24,11 +24,15 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  printf("    pc = " FMT_WORD "\n", cpu.pc);
   int nregs = MUXDEF(CONFIG_RVE, 16, 32);
   for(int i = 0; i < nregs; i++){
     printf("%2d: %s = %lu\n", i, regs[i], cpu.gpr[i]);
   }
+  printf(" mstatus = %lu\n", cpu.csr.mstatus);
+  printf(" mcause= %lu\n", cpu.csr.mcause);
+  printf(" mtvec = %lu\n", cpu.csr.mtvec);
+  printf(" mepc = %lu\n", cpu.csr.mepc);
+  printf("    pc = " FMT_WORD "\n", cpu.pc);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
