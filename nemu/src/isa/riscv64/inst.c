@@ -51,7 +51,35 @@ enum {
                                  BITS(i, 19, 12) << 12 | \
                                  BITS(i, 20, 20) << 11 | \
                                  BITS(i, 30, 21) << 1), 21); } while(0)
+                        
 
+#define ECALL(dnpc) do{  bool success; \
+                         word_t NO = isa_reg_str2val("a7", &success); \
+                         dnpc = isa_raise_intr(NO, s->pc); \
+                                    } while(0)
+
+static word_t* csr_addr(word_t imm){
+  switch (imm)
+  {
+  case 0x300:
+    return &cpu.csr.mstatus;
+    break;
+  case 0x342:
+    return &cpu.csr.mcause;
+    break;
+  case 0x305:
+    return &cpu.csr.mtvec;
+    break;
+  case 0x341:
+    return &cpu.csr.mepc;
+    break;
+  default:
+    panic("unknown csr register");
+    break;
+  }
+}
+
+#define CSR(i)  *csr_addr(i)
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
@@ -131,6 +159,12 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 110 ????? 01100 11", or     , R, R(rd) = src1 | src2);
   INSTPAT("0000000 ????? ????? 111 ????? 01100 11", and    , R, R(rd) = src1 & src2);
 
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , I, ECALL(s->dnpc)); // R(10) is $a0
+  INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , I, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, word_t t = CSR(imm); CSR(imm) = src1; R(rd) = t); 
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, word_t t = CSR(imm); CSR(imm) = t | src1; R(rd) = t); 
+  INSTPAT("??????? ????? ????? 011 ????? 11100 11", csrrc  , I, word_t t = CSR(imm); CSR(imm) = t & ~src1; R(rd) = t); 
+
 
   // =========================================== RV32M instructions =============================================================
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd) = src1 * src2);
@@ -165,8 +199,12 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 110 ????? 01110 11", remw   , R, R(rd) = (sword_t)SEXT(src1, 32) % (sword_t)SEXT(src2, 32));
   INSTPAT("0000001 ????? ????? 111 ????? 01110 11", remuw  , R, R(rd) = SEXT(BITS(src1, 31, 0) % BITS(src2, 31, 0), 32));
 
+
+  //============================================ 
+
+
+
   //============================================ special instructions(nemu use) =================================================
-  INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
 
   
