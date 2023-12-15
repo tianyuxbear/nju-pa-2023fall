@@ -8,14 +8,12 @@
 #endif
 
 
-#include <stdint.h>
-
 struct Context {
   // TODO: fix the order of these members to match trap.S
-  uint64_t gpr[NR_REGS];
-  uint64_t mcause;
-  uint64_t mstatus;
-  uint64_t mepc;
+  unsigned long long gpr[NR_REGS];
+  unsigned long long mcause;
+  unsigned long long mstatus;
+  unsigned long long mepc;
   void *pdir;
 };
 
