@@ -13,13 +13,13 @@ Context* __am_irq_handle(Context *c) {
         break;
       default: ev.event = EVENT_ERROR; break;
     }
-    for(int i = 0; i < 32; i++){
-      printf("x%d ==> 0x%08x", i, c->gpr[i]);
-      putch('\n');
-    }
-    printf("mcause ==> 0x%08x", c->mcause); putch('\n');
-    printf("mstatus ==> 0x%08x", c->mstatus); putch('\n');
-    printf("mepc ==> 0x%08x", c->mepc); putch('\n');
+    // for(int i = 0; i < 32; i++){
+    //   printf("x%d ==> 0x%08x", i, c->gpr[i]);
+    //   putch('\n');
+    // }
+    // printf("mcause ==> 0x%08x", c->mcause); putch('\n');
+    // printf("mstatus ==> 0x%08x", c->mstatus); putch('\n');
+    // printf("mepc ==> 0x%08x", c->mepc); putch('\n');
     c = user_handler(ev, c);
     assert(c != NULL);
   }
