@@ -55,7 +55,7 @@ enum {
 
 #define ECALL(dnpc) do{  bool success; \
                          word_t NO = isa_reg_str2val("$a7", &success); \
-                         dnpc = isa_raise_intr(NO, s->snpc); \
+                         dnpc = isa_raise_intr(NO, s->pc); \
                                     } while(0)
 
 
@@ -204,7 +204,7 @@ static int decode_exec(Decode *s) {
 
 
   //============================================ RV32/64 privileged instructions ================================================
-  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC));
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC) + 4);
 
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
