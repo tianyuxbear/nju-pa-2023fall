@@ -19,7 +19,7 @@ Context* __am_irq_handle(Context *c) {
     // printf("mcause ==> 0x%08x", c->mcause); 
     // printf("mstatus ==> 0x%08x", c->mstatus);
     // printf("mepc ==> 0x%08x", c->mepc);
-    printf("hello world");
+    printf("hello world\n");
     c = user_handler(ev, c);
     assert(c != NULL);
   }
