@@ -105,10 +105,10 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             str += bytes;
             nbyte += bytes;
           }else{
-            int padding = prefix_num - bytes;
-            if(padding > 0){
+            if(has_padding){
+              int padding = prefix_num - bytes;
               for(int i = 0; i < padding; i++) putch(prefix_char);
-              nbyte += padding;
+              nbyte += padding >= 0 ? padding : 0;
 
               has_padding = false;
               prefix_num = 0;
@@ -129,10 +129,10 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             str += bytes;
             nbyte += bytes;
           }else{
-            int padding = prefix_num - bytes;
-            if(padding >= 0){
+            if(has_padding){
+              int padding = prefix_num - bytes;
               for(int i = 0; i < padding; i++) putch(prefix_char);
-              nbyte += padding;
+              nbyte += padding >= 0 ? padding : 0;
 
               has_padding = false;
               prefix_num = 0;
@@ -234,8 +234,6 @@ int handle_prefix(const char* format){
   for(int i = 0; i < index; i++){
     prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
   }
-
- // prefix_num++;
 
   has_padding = true;
 
