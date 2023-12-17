@@ -228,6 +228,7 @@ int handle_prefix(const char* format){
   int index = 0;
 
   while(*format >= '0' && *format <= '9'){
+    putch(*format);
     prefix_num_str[index++] = *format++;
   }
 
