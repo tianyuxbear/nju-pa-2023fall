@@ -26,7 +26,7 @@ static char* syscall_name[] = {
 
 
 void do_syscall(Context *c) {
-  uintptr_t a[4];
+  uint64_t a[4];
   a[0] = c->GPR1;  //a7
   a[1] = c->GPR2;  //a0
   a[2] = c->GPR2;  //a1
@@ -52,7 +52,7 @@ void do_syscall(Context *c) {
       printf("=== syscall: %s ===\n", syscall_name[SYS_write]);
       int fd = (int)a[1];
       char* buf = (char*) a[2];
-      size_t count = a[3];
+      size_t count = (uint32_t)a[3];
       printf("fd: %d\t buf: %s\t count: %d\n", fd, buf,count);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
