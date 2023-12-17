@@ -43,10 +43,10 @@ void do_syscall(Context *c) {
       yield();
       break;
     case SYS_open:
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_open], a[1], a[2], a[3], a[1]);
       break;
     case SYS_read:
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_read], a[1], a[2], a[3], a[1]);
       break;
     case SYS_write:
       int fd = (int)a[1];
@@ -56,7 +56,7 @@ void do_syscall(Context *c) {
         for(int i = 0; i < count; i++) putch(buf[i]);
         c->GPR2 = count;
       } 
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_write], a[1], a[2], a[3], a[1]);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
