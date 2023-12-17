@@ -1,13 +1,15 @@
 #include <common.h>
-extern void do_syscall(Context *c);
 
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
     case EVENT_YIELD:
       printf("=== Trigger yield event ===\n");
       break;
+    case EVENT_SYSCALL:
+      printf("=== Get a syscall ===\n");
+      break;
     default: 
-      do_syscall(c);
+      panic("Unhandled event ID = %d", e.event);
       break;
   }
 
