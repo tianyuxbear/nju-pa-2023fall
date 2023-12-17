@@ -50,13 +50,13 @@ void do_syscall(Context *c) {
       break;
     case SYS_write:
       printf("=== syscall: %s ===\n", syscall_name[SYS_write]);
-      int fd = (int)a[1];
-      char* buf = (char*) a[2];
-      size_t count = a[3];
-      if(fd == 1 || fd == 2){
-        for(int i = 0; i < count; i++) putch(buf[i]);
-        c->GPR2 = count;
-      }
+      // int fd = (int)a[1];
+      // char* buf = (char*) a[2];
+      // size_t count = a[3];
+      // if(fd == 1 || fd == 2){
+      //   // for(int i = 0; i < count; i++) putch(buf[i]);
+      //   // c->GPR2 = count;
+      // }
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
