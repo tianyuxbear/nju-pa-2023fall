@@ -2,20 +2,24 @@
 #define NEMU_H__
 
 #include <klib-macros.h>
+#include <elf.h>
 
 #include ISA_H // the macro `ISA_H` is defined in CFLAGS
                // it will be expanded as "x86/x86.h", "mips/mips32.h", ...
 
 #if defined(__ISA_X86__)
-# define nemu_trap(code) asm volatile ("int3" : :"a"(code))
+  #define nemu_trap(code) asm volatile ("int3" : :"a"(code))
+  #define EXPECT_TYPE EM_X86_64
 #elif defined(__ISA_MIPS32__)
-# define nemu_trap(code) asm volatile ("move $v0, %0; sdbbp" : :"r"(code))
+  #define nemu_trap(code) asm volatile ("move $v0, %0; sdbbp" : :"r"(code))
+  #define EXPECT_TYPE EM_MIPS
 #elif defined(__riscv)
-# define nemu_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+  #define nemu_trap(code) asm volatile("mv a0, %0; ebreak" : :"r"(code))
+  #define EXPECT_TYPE EM_RISCV
 #elif defined(__ISA_LOONGARCH32R__)
-# define nemu_trap(code) asm volatile("move $a0, %0; break 0" : :"r"(code))
+  #define nemu_trap(code) asm volatile("move $a0, %0; break 0" : :"r"(code))
 #elif
-# error unsupported ISA __ISA__
+  #error unsupported ISA __ISA__
 #endif
 
 #if defined(__ARCH_X86_NEMU)
