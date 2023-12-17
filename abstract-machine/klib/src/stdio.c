@@ -196,9 +196,7 @@ int handle_dec(int num){
   }
   int_str[index] = '\0';
 
-  int bytes = strlen(int_str);
-
-  return bytes;
+  return index;
 }
 
 int handle_hex(uint64_t num){
@@ -226,14 +224,13 @@ int handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
   while(*format >= '0' && *format <= '9'){
-    putch(*format);
     prefix_num_str[index++] = *format++;
   }
 
   for(int i = 0; i < index; i++){
     prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
   }
-  
+
   has_padding = true;
 
   return index;
