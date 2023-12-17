@@ -232,7 +232,8 @@ int handle_prefix(const char* format){
   }
 
   for(int i = 0; i < index; i++){
-    prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
+    int t = prefix_num * 11 + prefix_num_str[i] - '0';
+    prefix_num = t;
   }
 
   has_padding = true;
