@@ -9,7 +9,7 @@ static bool has_padding = false;
 
 static char int_str[30];
 int handle_dec(int num);
-int handle_hex(uint64_t num);
+int handle_hex(int num);
 
 static int prefix_num = 0;
 static char prefix_char = ' ';
@@ -59,8 +59,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
   size_t maxbytes = size - 1;
   
   char c;
-  int d;
-  uint64_t x;
+  int d, x;
   char* s;
 
   while(*format != '\0'){
@@ -121,7 +120,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           format++;
           break;
         case 'x':
-          x = va_arg(ap, uint64_t);
+          x = va_arg(ap, int);
           bytes = handle_hex(x);
           if(str != NULL){
             bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
@@ -196,17 +195,20 @@ int handle_dec(int num){
   }
   int_str[index] = '\0';
 
-  return index;
+  int bytes = strlen(int_str);
+
+  return bytes;
 }
 
-int handle_hex(uint64_t num){
+int handle_hex(int num){
   memset(int_str, 0, sizeof(int_str));
   int index = 0;
 
-  while(num != 0){
-    char byte = num % 16;
+  uint32_t hex = (uint32_t)num;
+  while(hex != 0){
+    char byte = hex % 16;
     int_str[index++] = (byte < 10) ? byte + '0' : byte - 10 + 'a';
-    num /= 16;
+    hex /= 16;
   }
   if(index == 0) int_str[index++] = '0';
 
@@ -216,19 +218,21 @@ int handle_hex(uint64_t num){
     int_str[j] = tmp;
   }
   int_str[index] = '\0';
+  int bytes = strlen(int_str);
 
-  return index;
+  return bytes;
 }
 
 int handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
+
   while(*format >= '0' && *format <= '9'){
     prefix_num_str[index++] = *format++;
   }
 
   for(int i = 0; i < index; i++){
-    prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
+    prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
   }
 
   has_padding = true;
