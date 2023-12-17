@@ -130,7 +130,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             nbyte += bytes;
           }else{
             int padding = prefix_num - bytes;
-            if(padding > 0){
+            if(padding >= 0){
               for(int i = 0; i < padding; i++) putch(prefix_char);
               nbyte += padding;
 
