@@ -218,9 +218,8 @@ int handle_hex(uint64_t num){
     int_str[j] = tmp;
   }
   int_str[index] = '\0';
-  int bytes = strlen(int_str);
 
-  return bytes;
+  return index;
 }
 
 int handle_prefix(const char* format){
