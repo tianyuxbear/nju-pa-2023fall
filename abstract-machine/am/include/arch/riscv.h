@@ -10,10 +10,10 @@
 
 struct Context {
   // TODO: fix the order of these members to match trap.S
-  unsigned long long gpr[NR_REGS];
-  unsigned long long mcause;
-  unsigned long long mstatus;
-  unsigned long long mepc;
+  uint64_t gpr[NR_REGS];
+  uint64_t mcause;
+  uint64_t mstatus;
+  uint64_t mepc;
   void *pdir;
 };
 
