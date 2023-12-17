@@ -232,7 +232,7 @@ int handle_prefix(const char* format){
   }
 
   for(int i = 0; i < index; i++){
-    prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
+    prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
   }
 
   has_padding = true;
