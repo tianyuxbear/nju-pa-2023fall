@@ -35,21 +35,21 @@ void do_syscall(Context *c) {
 
   switch (a[0]) {
     case SYS_exit:
-      printf("=== syscall: %s ===\n", syscall_name[SYS_exit]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_exit], a[1], a[2], a[3], a[1]);
       halt(a[1]);
       break;
     case SYS_yield:
-      printf("=== syscall: %s ===\n", syscall_name[SYS_yield]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
       yield();
       break;
     case SYS_open:
-      printf("=== syscall: %s ===\n", syscall_name[SYS_open]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
       break;
     case SYS_read:
-      printf("=== syscall: %s ===\n", syscall_name[SYS_read]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
       break;
     case SYS_write:
-      printf("=== syscall: %s ===\n", syscall_name[SYS_write]);
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3], a[1]);
       int fd = (int)a[1];
       char* buf = (char*) a[2];
       size_t count = (uint32_t) a[3];
