@@ -50,10 +50,7 @@ void do_syscall(Context *c) {
       break;
     case SYS_write:
       printf("=== syscall: %s ===\n", syscall_name[SYS_write]);
-      int fd = (int)a[1];
-      char* buf = (char*) a[2];
-      size_t count = (uint32_t)a[3];
-      printf("fd: %d\t buf: %s\t count: %d\n", fd, buf,count);
+      printf("fd: 0x%016x\n buf: 0x%016x\n count: 0x%016x\n", a[1], a[2], a[3]);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
