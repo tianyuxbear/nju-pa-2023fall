@@ -12,6 +12,7 @@
 static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf64_Ehdr elf_header;
   ramdisk_read(&elf_header, 0, sizeof(elf_header));
+  assert(*(uint64_t *)elf_header.e_ident == 0x00010102464c457f);
 
   // read program headers
   Elf64_Off e_phoff = elf_header.e_phoff;
