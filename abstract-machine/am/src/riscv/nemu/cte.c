@@ -18,6 +18,7 @@ Context* __am_irq_handle(Context *c) {
     // printf("mcause ==> 0x%016x\n", c->mcause);
     // printf("mstatus ==> 0x%016x\n", c->mstatus);
     printf("mepc ==> 0x%016x\n", c->mepc);
+    printf("hex test: 0x%08x\n", 0x12345);
     
     c = user_handler(ev, c);
     assert(c != NULL);
