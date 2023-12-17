@@ -225,19 +225,15 @@ int handle_hex(uint64_t num){
 int handle_prefix(const char* format){
   memset(prefix_num_str, 0, sizeof(prefix_num_str));
   int index = 0;
-  putch('=');putch('=');putch('=');
   while(*format >= '0' && *format <= '9'){
     putch(*format);
     prefix_num_str[index++] = *format++;
   }
 
   for(int i = 0; i < index; i++){
-    prefix_num += prefix_num * 10 + prefix_num_str[i] - '0';
+    prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
   }
-  char* temp = (char*)&prefix_num;
-  putch(' ');
-  putch(temp[3]);putch(temp[2]);putch(temp[1]);putch(temp[0]);
-  putch('=');putch('=');putch('=');
+  
   has_padding = true;
 
   return index;
