@@ -149,6 +149,23 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
           int offset = handle_prefix(format);
           format += offset - 1;
           break;
+        case 'p':
+          x = va_arg(ap, uint64_t);
+          bytes = handle_hex(x);
+          if(str != NULL){
+            bytes = nbyte + bytes > maxbytes ? maxbytes - nbyte : bytes;
+            strncpy(str, int_str, bytes);
+            str += bytes;
+            nbyte += bytes;
+          }else{
+            putch('0');putch('x');
+            nbyte += 2;
+            for(int i = 0; i < bytes; i++)
+              putch(int_str[i]);
+            nbyte += bytes;
+          }
+          format++;
+          break;
         default:
           printf("unimplemented char:");
           putch(*format);
