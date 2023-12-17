@@ -235,6 +235,8 @@ int handle_prefix(const char* format){
     prefix_num = prefix_num * 10 + prefix_num_str[i] - '0';
   }
 
+  prefix_num++;
+
   has_padding = true;
 
   return index;
