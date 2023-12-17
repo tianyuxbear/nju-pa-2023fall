@@ -129,6 +129,7 @@ int vsnprintf(char *str, size_t size, const char *format, va_list ap) {
             str += bytes;
             nbyte += bytes;
           }else{
+            printf("prefix_num: %d bytes: %d\n", prefix_num, bytes);
             int padding = prefix_num - bytes;
             if(padding > 0){
               for(int i = 0; i < padding; i++) putch(prefix_char);
