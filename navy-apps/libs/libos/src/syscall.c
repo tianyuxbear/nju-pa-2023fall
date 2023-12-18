@@ -88,8 +88,8 @@ int _close(int fd) {
 }
 
 off_t _lseek(int fd, off_t offset, int whence) {
-  int offset = _syscall_(SYS_lseek, fd, offset, whence);
-  return offset;
+  off_t ret = _syscall_(SYS_lseek, fd, offset, whence);
+  return ret;
 }
 
 void *_sbrk(intptr_t increment) {
