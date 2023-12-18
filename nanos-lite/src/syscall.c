@@ -58,6 +58,10 @@ void do_syscall(Context *c) {
       } 
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_write], a[1], a[2], a[3], c->GPR2);
       break;
+    case SYS_brk:
+      c->GPR2 = 0;
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_brk], a[1], a[2], a[3], c->GPR2);
+      break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
 }
