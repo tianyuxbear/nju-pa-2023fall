@@ -1,4 +1,5 @@
 #include <proc.h>
+#include <fs.h>
 #include <elf.h>
 
 #ifdef __LP64__
@@ -10,8 +11,10 @@
 #endif
 
 static uintptr_t loader(PCB *pcb, const char *filename) {
+  int fd = fs_open(filename, 0, 0);
+
   Elf64_Ehdr elf_header;
-  ramdisk_read(&elf_header, 0, sizeof(elf_header));
+  fs_read(fd, &elf_header, sizeof(elf_header));
   assert(*(uint64_t *)elf_header.e_ident == 0x00010102464c457f);
 
   // read program headers
@@ -19,15 +22,19 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   uint16_t e_phentsize = elf_header.e_phentsize;
   uint16_t e_phnum = elf_header.e_phnum;
 
+  fs_lseek(fd, e_phoff, SEEK_SET);
   Elf64_Phdr elf_phdrs[e_phentsize];
-  ramdisk_read(elf_phdrs, e_phoff, sizeof(elf_phdrs));
+  fs_read(fd, elf_phdrs, sizeof(elf_phdrs));
+
+
   for(int i = 0; i < e_phnum; i++){
     if(elf_phdrs[i].p_type == PT_LOAD){
       Elf64_Off p_offset = elf_phdrs[i].p_offset;
       Elf64_Addr p_vaddr = elf_phdrs[i].p_vaddr;
       uint64_t p_filesz = elf_phdrs[i].p_filesz;
       uint64_t p_memsz = elf_phdrs[i].p_memsz;
-      ramdisk_read((void*)p_vaddr, p_offset, p_filesz);
+      fs_lseek(fd, p_offset, SEEK_SET);
+      fs_read(fd, (void*)p_vaddr, p_filesz);
       memset((void*)(p_vaddr + p_filesz), 0, p_memsz - p_filesz);
     }
   }
