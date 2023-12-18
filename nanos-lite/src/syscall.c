@@ -1,6 +1,7 @@
 #include <common.h>
-#include "syscall.h"
 #include <fs.h>
+#include "syscall.h"
+#include <sys/time.h>
 
 static char* syscall_name[] = {
   "SYS_exit",
@@ -76,6 +77,20 @@ void do_syscall(Context *c) {
     case SYS_brk:
       c->GPRx = 0;
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_brk], a[1], a[2], a[3], c->GPRx);
+      break;
+    case SYS_gettimeofday:
+      struct timeval *tv = (struct timeval*)a[1];
+      struct timeval *tz = (struct timeval*)a[2];
+      uint64_t us = io_read(AM_TIMER_UPTIME).us;
+      if(tv != NULL){
+        tv->tv_sec = us / 1000000;
+        tv->tv_usec = us % 1000000;
+      }
+      if(tz != NULL){
+        
+      }
+      c->GPRx = 0;
+      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_gettimeofday], a[1], a[2], a[3], c->GPRx);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
