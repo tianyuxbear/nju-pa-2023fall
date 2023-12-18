@@ -5,10 +5,10 @@ void do_syscall(Context *c);
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
     case EVENT_YIELD:
-      printf("=== Trigger yield event ===\n");
+      //printf("=== Trigger yield event ===\n");
       break;
     case EVENT_SYSCALL:
-      printf("=== Trigger syscall event ===\n");
+      //printf("=== Trigger syscall event ===\n");
       do_syscall(c);
       break;
     default: 
