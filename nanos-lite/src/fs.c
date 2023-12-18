@@ -48,6 +48,7 @@ int fs_open(const char* pathname, int flags, int mode){
 }
 
 size_t fs_read(int fd, void* buf, size_t len){
+  assert(fd >= 3);
   size_t size = file_table[fd].size;
   size_t disk_offset = file_table[fd].disk_offset;
   size_t open_offset = file_table[fd].open_offset;
@@ -58,6 +59,7 @@ size_t fs_read(int fd, void* buf, size_t len){
 }
 
 size_t fs_write(int fd, const void* buf, size_t len){
+  assert(fd >= 3);
   size_t size = file_table[fd].size;
   size_t disk_offset = file_table[fd].disk_offset;
   size_t open_offset = file_table[fd].open_offset;
@@ -92,4 +94,8 @@ int fs_close(int fd){
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+  int filenum = sizeof(file_table) / sizeof(Finfo);
+  for(int i = 0; i < filenum; i++){
+    file_table[i].open_offset = 0;
+  }
 }
