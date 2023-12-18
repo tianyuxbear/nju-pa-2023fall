@@ -59,7 +59,6 @@ intptr_t _syscall_(uint64_t type, uint64_t a0, uint64_t a1, uint64_t a2) {
 }
 
 void _exit(int status) {
-  printf("exit status: %d\n", status);
   _syscall_(SYS_exit, status, 0, 0);
   while (1);
 }
