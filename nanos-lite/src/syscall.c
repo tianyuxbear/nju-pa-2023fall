@@ -56,18 +56,11 @@ void do_syscall(Context *c) {
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_open], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_read:
-      assert(fd >= 3);
       c->GPRx = fs_read(fd, buf, len);
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_read], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_write:
-      if(fd == 1 || fd == 2){
-        for(int i = 0; i < len; i++) putch(((char*)buf)[i]);
-        c->GPRx = len;
-      }else{
-        assert(fd != 0);
-        c->GPRx = fs_write(fd, buf, len);
-      } 
+      c->GPRx = fs_write(fd, buf, len);
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_write], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_close:
