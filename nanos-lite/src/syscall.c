@@ -36,7 +36,8 @@ void do_syscall(Context *c) {
   switch (a[0]) {
     case SYS_exit:
       printf("=== syscall: %s --> args: %p %p %p ===  \n", syscall_name[SYS_exit], a[1], a[2], a[3]);
-      halt(a[1]);
+      c->GPR2 = 0;
+      halt(c->GPR2);
       break;
     case SYS_yield:
       printf("=== syscall: %s --> args: %p %p %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3]);
