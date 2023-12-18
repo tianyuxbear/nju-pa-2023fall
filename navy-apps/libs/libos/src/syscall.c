@@ -68,13 +68,28 @@ void _yield(){
 }
 
 int _open(const char *path, int flags, mode_t mode) {
-  _exit(SYS_open);
-  return 0;
+  int fd = _syscall_(SYS_open, (uint64_t)path, flags, mode);
+  return fd;
+}
+
+int _read(int fd, void *buf, size_t count) {
+  int bytes = _syscall_(SYS_read, fd, (uint64_t)buf, count);
+  return bytes;
 }
 
 int _write(int fd, void *buf, size_t count) {
-  _syscall_(SYS_write, fd, (uint64_t)buf, count);
-  return 0;
+  int bytes = _syscall_(SYS_write, fd, (uint64_t)buf, count);
+  return bytes;
+}
+
+int _close(int fd) {
+  int ret = _syscall_(SYS_close, fd, 0, 0);
+  return ret;
+}
+
+off_t _lseek(int fd, off_t offset, int whence) {
+  int offset = _syscall_(SYS_lseek, fd, offset, whence);
+  return offset;
 }
 
 void *_sbrk(intptr_t increment) {
@@ -92,21 +107,6 @@ void *_sbrk(intptr_t increment) {
   }else{
     return (void*)-1;
   }
-}
-
-int _read(int fd, void *buf, size_t count) {
-  _exit(SYS_read);
-  return 0;
-}
-
-int _close(int fd) {
-  _exit(SYS_close);
-  return 0;
-}
-
-off_t _lseek(int fd, off_t offset, int whence) {
-  _exit(SYS_lseek);
-  return 0;
 }
 
 int _gettimeofday(struct timeval *tv, struct timezone *tz) {
