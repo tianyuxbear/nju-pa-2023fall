@@ -19,15 +19,28 @@ void hello_fun(void *arg) {
   }
 }
 
+Context *context_kload(PCB* kpcb, void (*entry)(void *), void *arg) {
+  Context *cp = kcontext((Area) { kpcb->stack, kpcb + 1 }, entry, arg);
+  kpcb->cp = cp;
+  return cp;
+}
+
+
 void init_proc() {
+  context_kload(&pcb[0], hello_fun, (void*)1);
+  context_kload(&pcb[1], hello_fun, (void*)2);
+
   switch_boot_pcb();
 
   Log("Initializing processes...");
 
   // load program here
-  naive_uload(NULL, "/bin/event-test");
+  naive_uload(NULL, NULL);
 }
 
 Context* schedule(Context *prev) {
-  return NULL;
+  current->cp = prev;
+  current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  printf("Schedule Context: 0x%016x ==> 0x%016x\n", (uint64_t)prev, (uint64_t)current->cp);
+  return current->cp;
 }
