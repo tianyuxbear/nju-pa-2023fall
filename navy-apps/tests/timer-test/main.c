@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <assert.h>
 
+extern uint32_t NDL_GetTicks();
+
 int main()
 {
 	struct timeval tv;
-	uint64_t ms = 500;
-	gettimeofday(&tv, NULL);
+	uint32_t ms = 500;
+	uint32_t ticks = NDL_GetTicks();
 	while(1){
-		while((tv.tv_sec * 1000 + tv.tv_usec / 1000) < ms){
-			gettimeofday(&tv, NULL);
+		while(ticks < ms){
+			ticks = NDL_GetTicks();
 		}
 		printf("ms = %d\n", (int)ms);
 		ms += 500;

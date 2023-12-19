@@ -9,7 +9,10 @@ static int fbdev = -1;
 static int screen_w = 0, screen_h = 0;
 
 uint32_t NDL_GetTicks() {
-  return 0;
+  struct timeval tv;
+	gettimeofday(&tv, NULL);
+	uint32_t ms = tv.tv_sec * 1000 + tv.tv_usec / 1000;
+  return ms;
 }
 
 int NDL_PollEvent(char *buf, int len) {
@@ -57,8 +60,10 @@ int NDL_Init(uint32_t flags) {
   if (getenv("NWM_APP")) {
     evtdev = 3;
   }
+  printf("--- NDL Init ---\n");
   return 0;
 }
 
 void NDL_Quit() {
+  printf("--- NDL Quit ---\n");
 }
