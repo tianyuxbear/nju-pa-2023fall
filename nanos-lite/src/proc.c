@@ -41,11 +41,6 @@ void init_proc() {
 
 Context* schedule(Context *prev) {
   current->cp = prev;
-  printf("current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
-  printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-  printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  printf("current: 0x%016x     current->cp: 0x%016x\n", current, current->cp);
-  printf("Schedule Context: 0x%016x ==> 0x%016x\n", (uint64_t)prev, (uint64_t)current->cp);
   return current->cp;
 }
