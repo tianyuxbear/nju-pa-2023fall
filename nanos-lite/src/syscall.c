@@ -54,15 +54,15 @@ void do_syscall(Context *c) {
       int flags = (int)a[2];
       int mode = (int)a[3];
       c->GPRx = fs_open(pathname, flags, mode);
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_open], a[1], a[2], a[3], c->GPRx);
+      //printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_open], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_read:
       c->GPRx = fs_read(fd, buf, len);
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_read], a[1], a[2], a[3], c->GPRx);
+      //printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_read], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_write:
       c->GPRx = fs_write(fd, buf, len);
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_write], a[1], a[2], a[3], c->GPRx);
+      //printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_write], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_close:
       c->GPRx = fs_close(fd);
