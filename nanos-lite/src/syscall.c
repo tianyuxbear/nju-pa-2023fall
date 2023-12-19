@@ -90,7 +90,7 @@ void do_syscall(Context *c) {
 
       }
       c->GPRx = 0;
-      printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_gettimeofday], a[1], a[2], a[3], c->GPRx);
+      //printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_gettimeofday], a[1], a[2], a[3], c->GPRx);
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
