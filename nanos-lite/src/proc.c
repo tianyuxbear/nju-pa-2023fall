@@ -13,7 +13,7 @@ void switch_boot_pcb() {
 void hello_fun(void *arg) {
   int j = 1;
   while (1) {
-    Log("Hello World from Nanos-lite with arg '%p' for the %dth time!", (uintptr_t)arg, j);
+    Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char*)arg, j);
     j ++;
     yield();
   }
@@ -24,13 +24,12 @@ void context_kload(PCB* kpcb, void (*entry)(void *), void *arg) {
   stack.start = kpcb->stack;
   stack.end = kpcb->stack + STACK_SIZE;
   kpcb->cp = kcontext(stack, entry, arg);
-  printf("kpcb: 0x%016x     kpcb->cp: 0x%016x\n", kpcb, kpcb->cp);
 }
 
 
 void init_proc() {
-  context_kload(&pcb[0], hello_fun, (void*)1);
-  context_kload(&pcb[1], hello_fun, (void*)2);
+  context_kload(&pcb[0], hello_fun, (void*)"A");
+  context_kload(&pcb[1], hello_fun, (void*)"B");
   switch_boot_pcb();
 
   Log("Initializing processes...");
