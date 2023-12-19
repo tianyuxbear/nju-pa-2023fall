@@ -22,6 +22,7 @@ void hello_fun(void *arg) {
 Context *context_kload(PCB* kpcb, void (*entry)(void *), void *arg) {
   Context *cp = kcontext((Area) { kpcb->stack, kpcb + 1 }, entry, arg);
   kpcb->cp = cp;
+  printf("kpcb: 0x%016x     kpcb->cp: 0x%016x\n", kpcb, kpcb->cp);
   return cp;
 }
 
