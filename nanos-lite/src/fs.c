@@ -15,9 +15,10 @@ typedef struct {
 extern size_t ramdisk_read(void *buf, size_t offset, size_t len);
 extern size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 
+extern size_t events_read(void *buf, size_t offset, size_t len);
 extern size_t serial_write(const void *buf, size_t offset, size_t len);
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVT, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -34,6 +35,8 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDIN]  = {"stdin", 0, 0, 0, invalid_read, invalid_write},
   [FD_STDOUT] = {"stdout", 0, 0, 0, invalid_read, invalid_write},
   [FD_STDERR] = {"stderr", 0, 0, 0, invalid_read, invalid_write},
+  [FD_EVT] = {"/dev/events", 0, 0, 0, invalid_read, invalid_write},
+  [FD_FB] = {"/dev/fb", 0, 0, 0, invalid_read, invalid_write},
 #include "files.h"
 };
 
@@ -86,7 +89,7 @@ size_t fs_write(int fd, const void* buf, size_t len){
 }
 
 size_t fs_lseek(int fd, size_t offset, int whence){
-  assert(fd >= 3);
+  assert(fd >= 5);
   size_t size = file_table[fd].size;
   size_t open_offset = file_table[fd].open_offset;
   if(whence == SEEK_SET){
@@ -113,9 +116,10 @@ void init_fs() {
   // TODO: initialize the size of /dev/fb
   file_table[FD_STDOUT].write = serial_write;
   file_table[FD_STDERR].write = serial_write;
+  file_table[FD_EVT].read = events_read;
 
   int filenum = sizeof(file_table) / sizeof(Finfo);
-  for(int i = 3; i < filenum; i++){
+  for(int i = 5; i < filenum; i++){
     file_table[i].open_offset = 0;
     file_table[i].read = NULL;
     file_table[i].write = NULL;

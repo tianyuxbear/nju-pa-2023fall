@@ -20,7 +20,14 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
-  return 0;
+  bool keydown = io_read(AM_INPUT_KEYBRD).keydown;
+  int keycode = io_read(AM_INPUT_KEYBRD).keycode;
+  if(keycode == AM_KEY_NONE){
+    *((char*)buf) = '\0';
+    return 0;
+  }
+  int ret = snprintf((char*)buf, len, "%s ==> %s", keyname[keycode], keydown ? "keydown" : "keyup");
+  return ret;
 }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) {
