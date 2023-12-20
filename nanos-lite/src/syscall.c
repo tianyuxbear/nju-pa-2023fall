@@ -1,6 +1,7 @@
 #include <common.h>
 #include <fs.h>
 #include "syscall.h"
+#include "proc.h"
 #include <sys/time.h>
 
 static char* syscall_name[] = {
@@ -25,6 +26,9 @@ static char* syscall_name[] = {
   "SYS_times",
   "SYS_gettimeofday"
 };
+
+extern void switch_boot_pcb();
+extern void context_uload(PCB* upcb, const char* filename, char* const argv[], char* const envp[]);
 
 void do_syscall(Context *c) {
   uint64_t a[4];
@@ -77,7 +81,10 @@ void do_syscall(Context *c) {
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_brk], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_execve:
-      
+      context_uload(current, (char*)a[1], (char**)a[2], (char**)a[3]);
+      switch_boot_pcb();
+      yield();
+      while(1);
       break;
     case SYS_gettimeofday:
       struct timeval *tv = (struct timeval*)a[1];
