@@ -59,5 +59,6 @@ void init_proc() {
 Context* schedule(Context *prev) {
   current->cp = prev;
   current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
+  printf("Schedule: 0x%016x ===> 0x%016x\n", (uint64_t)prev, (uint64_t)current->cp);
   return current->cp;
 }
