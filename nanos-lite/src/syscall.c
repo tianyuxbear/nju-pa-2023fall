@@ -28,7 +28,7 @@ static char* syscall_name[] = {
 
 extern Context* schedule(Context *prev);
 
-void do_syscall(Context *c) {
+Context* do_syscall(Context *c) {
   uint64_t a[4];
   a[0] = c->GPR1;  //a7
   a[1] = c->GPR2;  //a0
@@ -48,7 +48,7 @@ void do_syscall(Context *c) {
       break;
     case SYS_yield:
       printf("=== syscall: %s --> args: %p %p %p ===  \n", syscall_name[SYS_yield], a[1], a[2], a[3]);
-      schedule(c);
+      c = schedule(c);
       break;
     case SYS_open:
       char* pathname = (char*)a[1];
@@ -95,4 +95,5 @@ void do_syscall(Context *c) {
       break;
     default: panic("Unhandled syscall ID = %d", a[0]);
   }
+  return c;
 }
