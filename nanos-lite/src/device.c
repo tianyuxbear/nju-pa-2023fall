@@ -15,11 +15,13 @@ static const char *keyname[256] __attribute__((used)) = {
 };
 
 size_t serial_write(const void *buf, size_t offset, size_t len) {
+  yield();
   for(int i = 0; i < len; i++) putch(((char*)buf)[i]);
   return len;
 }
 
 size_t events_read(void *buf, size_t offset, size_t len) {
+  yield();
   bool keydown = io_read(AM_INPUT_KEYBRD).keydown;
   int keycode = io_read(AM_INPUT_KEYBRD).keycode;
   if(keycode == AM_KEY_NONE){
