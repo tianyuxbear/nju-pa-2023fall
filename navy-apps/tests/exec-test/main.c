@@ -9,7 +9,7 @@ int main(int argc, char *argv[], char* envp[]) {
     printf("%d arg ==> %s\n", i + 1, (char*)((uint64_t)argv + i * 32));
   }
   int n = (argc >= 2 ? atoi(argv[1]) : 1);
-  printf("%s: argv[1] = %d\n", argv[0], n);
+  //printf("%s: argv[1] = %d\n", argv[0], n);
 
   // char buf[16];
   // sprintf(buf, "%d", n + 1);
