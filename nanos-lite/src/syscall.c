@@ -81,6 +81,7 @@ void do_syscall(Context *c) {
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_brk], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_execve:
+      printf("=== syscall: %s --> args: %p %p %p ===  \n", syscall_name[SYS_execve], a[1], a[2], a[3]);
       context_uload(current, (char*)a[1], (char**)a[2], (char**)a[3]);
       switch_boot_pcb();
       yield();
