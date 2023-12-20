@@ -15,18 +15,20 @@ void call_main(uintptr_t *args) {
     str_area += 8;
   }
 
-  char argv[argc][32] = {0};
+  char argv[argc][32];
+  memset(argv, 0, sizeof(argv));
   for(int i = 0; i < argc; i++){
     memcpy(argv[i], (void*)(str_area + i * 32), 32);
   }
 
   int envc = (str_area - addr) / 8 - 1 - 1 - argc;
   str_area += argc * 32;
-  char envp[envc][32]  = {0};
+  char envp[envc][32];
+  memset(envp, 0, sizeof(envp));
   for(int i = 0; i < envc; i++){
     memcpy(envp[i], (void*)(str_area + i * 32), 32);
   }
 
-  exit(main(argc, argv, envp));
+  exit(main(argc, (char**)argv, (char**)envp));
   assert(0);
 }
