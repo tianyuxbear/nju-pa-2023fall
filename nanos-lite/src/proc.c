@@ -15,7 +15,7 @@ void hello_fun(void *arg) {
   while (1) {
     Log("Hello World from Nanos-lite with arg '%s' for the %dth time!", (char*)arg, j);
     j++;
-    for(int volatile i = 0; i < 1000000; i++) ;
+    for(int volatile i = 0; i < 100000; i++) ;
     yield();
   }
 }
@@ -42,12 +42,12 @@ void init_proc() {
 
 Context* schedule(Context *prev) {
   current->cp = prev;
-  printf("before schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
-  printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-  printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
+  // printf("before schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
+  // printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
+  // printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  printf("after schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
-  printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-  printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
+  // printf("after schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
+  // printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
+  // printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   return current->cp;
 }
