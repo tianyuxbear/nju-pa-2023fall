@@ -86,9 +86,9 @@ void init_proc() {
   context_kload(&pcb[0], hello_fun, (void*)"A");
   //context_kload(&pcb[1], hello_fun, (void*)"B");
   //context_uload(&pcb[0], "/bin/hello");
-  char* argv[] = {"/bin/exec-test", "2", "3", NULL};
+  char* argv[] = {"/bin/hello", "2", "3", NULL};
   char* envp[] = {NULL};
-  context_uload(&pcb[1], "/bin/exec-test", argv, envp);
+  context_uload(&pcb[1], "/bin/hello", argv, envp);
   switch_boot_pcb();
 
   Log("Initializing processes...");

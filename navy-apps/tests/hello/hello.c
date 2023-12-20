@@ -4,7 +4,7 @@
 int main(int argc, char *argv[], char *envp[]) {
   printf("main ==> argc: %d    argv: 0x%016x    envp: 0x%016x\n", argc, (uint64_t)argv, (uint64_t)envp);
   for(int i = 0; i < argc; i++){
-    printf("%d arg ==> %s\n", i + 1, (char*)((uint64_t)argv + i * 32));
+    printf("%d arg ==> %s\n", i + 1, argv[i]);
   }
   write(1, "Hello World!\n", 13);
   int i = 1;
