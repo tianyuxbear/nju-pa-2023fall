@@ -45,9 +45,9 @@ void context_uload(PCB* upcb, const char* filename){
 
 
 void init_proc() {
-  //context_kload(&pcb[0], hello_fun, (void*)"A");
+  context_kload(&pcb[0], hello_fun, (void*)"A");
   //context_kload(&pcb[1], hello_fun, (void*)"B");
-  context_uload(&pcb[0], "/bin/hello");
+  //context_uload(&pcb[0], "/bin/hello");
   context_uload(&pcb[1], "/bin/hello");
   switch_boot_pcb();
 
