@@ -6,6 +6,8 @@ static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
 
+extern uintptr_t loader(PCB *pcb, const char *filename);
+
 void switch_boot_pcb() {
   current = &pcb_boot;
 }
@@ -28,10 +30,22 @@ void context_kload(PCB* kpcb, void (*entry)(void *), void *arg) {
   printf("kpcb: 0x%016x    kpcb->cp: 0x%016x\n", kpcb, kpcb->cp);
 }
 
+void context_uload(PCB* upcb, const char* filename){
+  Area stack;
+  stack.start = upcb->stack;
+  stack.end = upcb->stack + STACK_SIZE;
+
+  uintptr_t entry = loader(upcb, filename);
+
+  upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
+  upcb->cp->GPRx = (uint64_t)heap.end;
+  printf("upcb: 0x%016x    upcb->cp: 0x%016x\n", upcb, upcb->cp);
+}
+
 
 void init_proc() {
   context_kload(&pcb[0], hello_fun, (void*)"A");
-  context_kload(&pcb[1], hello_fun, (void*)"B");
+  context_uload(&pcb[1], "/bin/hello");
   switch_boot_pcb();
 
   Log("Initializing processes...");
@@ -42,12 +56,6 @@ void init_proc() {
 
 Context* schedule(Context *prev) {
   current->cp = prev;
-  // printf("before schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
-  // printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-  // printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   current = (current == &pcb[0] ? &pcb[1] : &pcb[0]);
-  // printf("after schedule ==> current: 0x%016x    current->cp: 0x%016x\n", current, current->cp);
-  // printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-  // printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   return current->cp;
 }

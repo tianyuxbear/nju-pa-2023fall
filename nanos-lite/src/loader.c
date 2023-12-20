@@ -12,7 +12,7 @@
 
 extern uint8_t ramdisk_start;
 
-static uintptr_t loader(PCB *pcb, const char *filename) {
+uintptr_t loader(PCB *pcb, const char *filename) {
   int fd = fs_open(filename, 0, 0);
 
   Elf64_Ehdr elf_header;
