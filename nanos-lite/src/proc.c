@@ -44,10 +44,13 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   uintptr_t entry = loader(upcb, filename);
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
 
+  uint64_t down = (uint64_t)new_page(8);
+  uint64_t top = down + 8 * PGSIZE;
+
   int argc = get_strnum(argv);
   int envc = get_strnum(envp);
   uint32_t offset = (1 + argc + 1 + envc + 1) * 8 + (argc + envc) * 32;
-  uint64_t addr = (uint64_t)heap.end - offset;
+  uint64_t addr = top - offset;
   uint64_t str_area = addr + (1 + argc + 1 + envc + 1) * 8;
 
   *((int*)addr) = argc;
@@ -71,7 +74,7 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   *((uint64_t*)addr) = 0;
   addr += 8;
 
-  upcb->cp->GPRx = (uint64_t)heap.end - offset;
+  upcb->cp->GPRx = top - offset;
 
 
   printf("=== heap.start: 0x%016x    heap.end: 0x%016x    ===\n", (uint64_t)heap.start, (uint64_t)heap.end);
