@@ -7,7 +7,6 @@ extern char **environ;
 void call_main(uintptr_t *args) {
   uint64_t addr = (uint64_t)args;
   int argc = *((int*)addr);
-  printf("addr: 0x%016x    argc: %d\n", addr, argc);
   addr += 8;
   uint64_t str_area = addr;
   int i = 0;
