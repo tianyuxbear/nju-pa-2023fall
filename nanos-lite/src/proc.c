@@ -17,7 +17,6 @@ void hello_fun(void *arg) {
     j++;
     for(int volatile i = 0; i < 1000000; i++) ;
     yield();
-    printf("==========\n");
   }
 }
 
