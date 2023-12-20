@@ -17,11 +17,11 @@ void hello_fun(void *arg) {
     j ++;
     printf("before yield\n");
     printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-    //printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
+    printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
     yield();
     printf("after yield\n");
     printf("&pcb[0]: 0x%016x    pcb[0].cp: 0x%016x\n", &pcb[0], pcb[0].cp);
-    //printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
+    printf("&pcb[1]: 0x%016x    pcb[1].cp: 0x%016x\n", &pcb[1], pcb[1].cp);
   }
 }
 
