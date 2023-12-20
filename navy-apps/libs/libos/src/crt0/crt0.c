@@ -31,6 +31,6 @@ void call_main(uintptr_t *args) {
   // }
   // exit(main(argc, (char**)argv, (char**)envp));
 
-  exit(main(0, NULL, NULL));
+  exit(main(0, (char**)(str_area), (char**)(str_area + argc * 32)));
   assert(0);
 }
