@@ -2,9 +2,7 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[], char *envp[]) {
-  for(int i = 0; i < argc; i++){
-    printf("%s\n", argv[i]);
-  }
+  printf("int main argc: %d\n", argc);
   write(1, "Hello World!\n", 13);
   int i = 1;
   volatile int j = 0;
