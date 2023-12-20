@@ -39,13 +39,15 @@ void context_uload(PCB* upcb, const char* filename){
 
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
   upcb->cp->GPRx = (uint64_t)heap.end;
+  printf("=== heap.start: 0x%016x    heap.end: 0x%016x    ===\n", (uint64_t)heap.start, (uint64_t)heap.end);
   printf("upcb: 0x%016x    upcb->cp: 0x%016x\n", upcb, upcb->cp);
 }
 
 
 void init_proc() {
   context_kload(&pcb[0], hello_fun, (void*)"A");
-  context_uload(&pcb[1], "/bin/hello");
+  context_kload(&pcb[1], hello_fun, (void*)"B");
+  //context_uload(&pcb[1], "/bin/hello");
   switch_boot_pcb();
 
   Log("Initializing processes...");
