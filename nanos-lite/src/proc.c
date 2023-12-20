@@ -30,15 +30,50 @@ void context_kload(PCB* kpcb, void (*entry)(void *), void *arg) {
   printf("kpcb: 0x%016x    kpcb->cp: 0x%016x\n", kpcb, kpcb->cp);
 }
 
-void context_uload(PCB* upcb, const char* filename){
+static int get_strnum(char* const strv[]){
+  int i = 0;
+  while(strv[i] != NULL) i++;
+  return i;
+}
+
+void context_uload(PCB* upcb, const char* filename, char* const argv[], char* const envp[]){
   Area stack;
   stack.start = upcb->stack;
   stack.end = upcb->stack + STACK_SIZE;
 
   uintptr_t entry = loader(upcb, filename);
-
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
-  upcb->cp->GPRx = (uint64_t)heap.end;
+
+  int argc = get_strnum(argv);
+  int envc = get_strnum(envp);
+  uint32_t offset = (1 + argc + 1 + envc + 1) * 8 + (argc + envc) * 32;
+  uint64_t addr = (uint64_t)heap.end - offset;
+  uint64_t str_area = addr + (1 + argc + 1 + envc + 1) * 8;
+
+  *((int*)addr) = argc;
+  addr += 8;
+
+  for(int i = 0; i < argc; i++){
+    memcpy((void*)(str_area + i * 32), (void*)argv[i], 32);
+    *((uint64_t*)(addr + i * 8)) = str_area + i * 32;
+  }
+  addr += argc * 8;
+  str_area += argc * 32;
+  *((uint64_t*)addr) = 0;
+  addr += 8;
+
+  for(int i = 0; i < envc; i++){
+    memcpy((void*)(str_area + i * 32), (void*)envp[i], 32);
+    *((uint64_t*)(addr + i * 8)) = str_area + i * 32;
+  }
+  addr += envc * 8;
+  str_area += envc * 32;
+  *((uint64_t*)addr) = 0;
+  addr += 8;
+
+  upcb->cp->GPRx = (uint64_t)heap.end - offset;
+
+
   printf("=== heap.start: 0x%016x    heap.end: 0x%016x    ===\n", (uint64_t)heap.start, (uint64_t)heap.end);
   printf("upcb: 0x%016x    upcb->cp: 0x%016x\n", upcb, upcb->cp);
 }
@@ -48,7 +83,9 @@ void init_proc() {
   context_kload(&pcb[0], hello_fun, (void*)"A");
   //context_kload(&pcb[1], hello_fun, (void*)"B");
   //context_uload(&pcb[0], "/bin/hello");
-  context_uload(&pcb[1], "/bin/hello");
+  char* argv[] = {NULL};
+  char* envp[] = {NULL};
+  context_uload(&pcb[1], "/bin/hello", argv, envp);
   switch_boot_pcb();
 
   Log("Initializing processes...");
