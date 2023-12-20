@@ -4,16 +4,15 @@
 
 int main(int argc, char *argv[], char *envp[]);
 extern char **environ;
-void call_main(uintptr_t *args) {
-  uint64_t addr = (uint64_t)args;
-  int argc = *((int*)addr);
-  addr += 8;
-  uint64_t str_area = addr;
-  int i = 0;
-  while(i != 2){
-    if(*((uint64_t*)str_area) == 0) i++;
-    str_area += 8;
-  }
-  exit(main(argc, (char**)(str_area), (char**)(str_area + argc * 32)));
+void call_main(uint64_t *args) {
+  int argc = (int)args[0];
+  
+  char** argv = (char**)(args + 1);
+
+  char** envp = (char**)(args + 1 + argc + 1);
+
+  environ = envp;
+
+  exit(main(argc, argv, envp));
   assert(0);
 }
