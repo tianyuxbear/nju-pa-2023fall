@@ -10,6 +10,7 @@ int main(int argc, char *argv[], char* envp[]) {
   }
   //int n = (argc >= 2 ? atoi(argv[1]) : 1);
   //printf("%s: argv[1] = %d\n", argv[0], n);
+  printf("================================\n");
   int n = 1;
   char buf[16];
   sprintf(buf, "%d", n + 1);
