@@ -39,10 +39,8 @@
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
   assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len));
   uint64_t offset = vaddr & 0x0fff;
-  printf("satp: 0x%016lx\n", cpu.csr.satp << 12);
-  printf("*satp: 0x%016lx\n", *(uint64_t*)(cpu.csr.satp << 12));
   uint64_t* root = (uint64_t*)(cpu.csr.satp << 12);
-  printf("*root: 0x%016lx\n", *root);
+  printf("root: %p\n", root);
   
   uint32_t va_vpn2 = VA_VPN2(vaddr);
   uint32_t va_vpn1 = VA_VPN1(vaddr);
