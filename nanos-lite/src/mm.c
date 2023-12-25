@@ -32,8 +32,8 @@ void init_mm() {
   Log("free physical pages starting from %p", pf);
 
 #ifdef HAS_VME
-  printf("before vme_init\n");
+  printf("enter vme_init\n");
   vme_init(pg_alloc, free_page);
-  printf("after vme_init\n");
+  printf("leave vme_init\n");
 #endif
 }
