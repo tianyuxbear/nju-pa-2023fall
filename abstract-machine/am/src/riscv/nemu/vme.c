@@ -101,7 +101,7 @@ void map(AddrSpace *as, void *vap, void *pap, int prot) {
   uint64_t* pte0 = (uint64_t*)(PTE2PA(*pte1)) + va_vpn0;
   int flag = PTE_V | prot;
   *pte0 = PA2PTE(pa) | flag;
-  printf("map: pa 0x%016lx ===> va 0x%016lx\n", pa, va);
+  printf("map: pa 0x%016x ===> va 0x%016x\n", pa, va);
 }
 
 Context *ucontext(AddrSpace *as, Area kstack, void *entry) {
