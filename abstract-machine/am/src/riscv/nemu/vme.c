@@ -13,16 +13,6 @@ static Area segments[] = {      // Kernel memory mappings
 
 #define USER_SPACE RANGE(0x40000000, 0x80000000)
 
-// page table entry macros
-#define PTE_V  1ul << 0
-#define PTE_R  1ul << 1
-#define PTE_W  1ul << 2
-#define PTE_X  1ul << 3
-#define PTE_U  1ul << 4
-#define PTE_G  1ul << 5
-#define PTE_A  1ul << 6
-#define PTE_D  1ul << 7
-
 // translation use
 #define OFFSET(addr) (addr & 0x0fff)
 #define VA_VPN0(va) ((va >> 12) & 0x01ff)
