@@ -39,24 +39,22 @@
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
   assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len));
   uint64_t offset = vaddr & 0x0fff;
-  uint64_t* root = (uint64_t*)(cpu.csr.satp << 12);
-  printf("root: %p\n", root);
-  printf("*root: 0x%016lx\n", *root);
+  uint64_t root = cpu.csr.satp << 12;
   
   uint32_t va_vpn2 = VA_VPN2(vaddr);
   uint32_t va_vpn1 = VA_VPN1(vaddr);
   uint32_t va_vpn0 = VA_VPN0(vaddr);
 
-  uint64_t* pte2 = root + va_vpn2;
-  assert((*pte2 & PTE_V) != 0);
+  uint64_t pte2 = paddr_read(root + va_vpn2 * 8, 8);
+  assert((pte2 & PTE_V) != 0);
   
-  uint64_t* pte1 = (uint64_t*)(PTE2PA(*pte2)) + va_vpn1;
-  assert((*pte1 & PTE_V) != 0);
+  uint64_t pte1 = paddr_read((PTE2PA(pte2)) + va_vpn1 * 8, 8);
+  assert((pte1 & PTE_V) != 0);
 
-  uint64_t* pte0 = (uint64_t*)(PTE2PA(*pte1)) + va_vpn0;
-  assert((*pte0 & PTE_V) != 0);
+  uint64_t pte0 = paddr_read((PTE2PA(pte1)) + va_vpn0 * 8, 8);
+  assert((pte0 & PTE_V) != 0);
 
-  uint64_t paddr = PTE2PA(*pte0) | offset;
+  uint64_t paddr = PTE2PA(pte0) | offset;
 
   return paddr;
 }
