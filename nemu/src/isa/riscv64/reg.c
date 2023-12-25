@@ -28,6 +28,7 @@ void isa_reg_display() {
   for(int i = 0; i < nregs; i++){
     printf("%2d: %s = %lu\n", i, regs[i], cpu.gpr[i]);
   }
+  printf("satp = %lu\n", cpu.csr.satp);
   printf("mstatus = %lu\n", cpu.csr.mstatus);
   printf("mcause= %lu\n", cpu.csr.mcause);
   printf("mtvec = %lu\n", cpu.csr.mtvec);

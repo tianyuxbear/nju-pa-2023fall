@@ -17,6 +17,44 @@
 #include <memory/vaddr.h>
 #include <memory/paddr.h>
 
-paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
-  return MEM_RET_FAIL;
+// page table entry macros
+#define PTE_V  1ul << 0
+#define PTE_R  1ul << 1
+#define PTE_W  1ul << 2
+#define PTE_X  1ul << 3
+#define PTE_U  1ul << 4
+#define PTE_G  1ul << 5
+#define PTE_A  1ul << 6
+#define PTE_D  1ul << 7
+
+// translation use
+#define OFFSET(addr) (addr & 0x0fff)
+#define VA_VPN0(va) ((va >> 12) & 0x01ff)
+#define VA_VPN1(va) ((va >> 21) & 0x01ff)
+#define VA_VPN2(va) ((va >> 30) & 0x01ff) 
+#define PA2PTE(addr) ((addr >> 12) << 10)
+#define PTE2PA(pte) ((pte >> 10) << 12)
+#define PGROUNDDOWN(addr) ((addr) & 0x0fff)
+
+paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
+  assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len));
+  uint64_t offset = vaddr & 0x0fff;
+  uint64_t* root = (uint64_t*)(cpu.csr.satp << 12);
+  
+  uint32_t va_vpn2 = VA_VPN2(vaddr);
+  uint32_t va_vpn1 = VA_VPN1(vaddr);
+  uint32_t va_vpn0 = VA_VPN0(vaddr);
+
+  uint64_t* pte2 = root + va_vpn2;
+  assert((*pte2 & PTE_V) != 0);
+  
+  uint64_t* pte1 = (uint64_t*)(PTE2PA(*pte2)) + va_vpn1;
+  assert((*pte1 & PTE_V) != 0);
+
+  uint64_t* pte0 = (uint64_t*)(PTE2PA(*pte1)) + va_vpn0;
+  assert((*pte0 & PTE_V) != 0);
+
+  uint64_t paddr = PTE2PA(*pte0) | offset;
+
+  return paddr;
 }

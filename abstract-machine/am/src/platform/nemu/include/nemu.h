@@ -47,7 +47,7 @@ extern char _pmem_start;
   RANGE(FB_ADDR, FB_ADDR + 0x200000), \
   RANGE(MMIO_BASE, MMIO_BASE + 0x1000) /* serial, rtc, screen, keyboard */
 
-typedef uintptr_t PTE;
+typedef uint64_t PTE;
 
 #define PGSIZE    4096
 

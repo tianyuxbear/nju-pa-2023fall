@@ -71,6 +71,9 @@ static char etrace_buf[ETRACE_BUF_SIZE];
 static word_t* csr_addr(word_t imm){
   switch (imm)
   {
+  case 0x180:
+    return &cpu.csr.satp;
+    break;
   case 0x300:
     return &cpu.csr.mstatus;
     break;

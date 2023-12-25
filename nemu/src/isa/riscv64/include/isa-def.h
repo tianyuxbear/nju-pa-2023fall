@@ -19,6 +19,7 @@
 #include <common.h>
 
 typedef struct{
+  word_t satp;
   word_t mstatus;
   word_t mcause;
   vaddr_t mtvec;
@@ -40,6 +41,6 @@ typedef struct {
   } inst;
 } MUXDEF(CONFIG_RV64, riscv64_ISADecodeInfo, riscv32_ISADecodeInfo);
 
-#define isa_mmu_check(vaddr, len, type) (MMU_DIRECT)
+#define isa_mmu_check(vaddr, len, type) (((cpu.csr.satp >> 60) & 0xf) == 8 ? MMU_TRANSLATE: MMU_DIRECT)
 
 #endif
