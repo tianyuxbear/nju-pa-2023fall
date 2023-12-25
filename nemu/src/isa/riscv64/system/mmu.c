@@ -39,7 +39,7 @@
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
   assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len));
   uint64_t offset = vaddr & 0x0fff;
-  printf("satp: 0x%016lx\n", cpu.csr.satp);
+  printf("satp: 0x%016lx\n", cpu.csr.satp << 12);
   uint64_t* root = (uint64_t*)(cpu.csr.satp << 12);
   printf("*root: 0x%016lx\n", *root);
   
