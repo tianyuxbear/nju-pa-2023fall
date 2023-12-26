@@ -46,7 +46,6 @@ uintptr_t loader(PCB *pcb, const char *filename) {
       fs_lseek(fd, p_offset, SEEK_SET);
       uint64_t va = p_vaddr;
       for(int i = 0; i < p_filesz; i += PGSIZE){
-        printf("loader: va: 0x%x\n", va);
         uint64_t pa = (uint64_t)new_page(1);
         fs_read(fd, (void*)pa, PGSIZE);
         if(i + PGSIZE > p_filesz){
@@ -56,7 +55,9 @@ uintptr_t loader(PCB *pcb, const char *filename) {
         int prot = PTE_R | PTE_W | PTE_X;
         map(&pcb->as, (void*)va, (void*)pa, prot);
         printf("Loader map ==> va: 0x%x   pa: 0x%x\n", va, pa);
+        printf("loader before change: va: 0x%x\n", va);
         va += PGSIZE;
+        printf("loader after change: va: 0x%x\n", va);
       }
     }
   }
