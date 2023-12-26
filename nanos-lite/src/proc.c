@@ -43,6 +43,9 @@ static int get_strnum(char* const strv[]){
 }
 
 void context_uload(PCB* upcb, const char* filename, char* const argv[], char* const envp[]){
+   // init addr space
+  protect(&upcb->as);
+
   Area stack;
   stack.start = upcb->stack;
   stack.end = upcb->stack + STACK_SIZE;
@@ -50,9 +53,6 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   uintptr_t entry = loader(upcb, filename);
   printf("Entry addr: 0x%x\n", entry);
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
-
-  // init addr space
-  protect(&upcb->as);
   upcb->cp->pdir = upcb->as.ptr;
 
   uint64_t down = (uint64_t)new_page(8);
