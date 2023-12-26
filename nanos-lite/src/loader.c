@@ -10,7 +10,14 @@
 # define Elf_Phdr Elf32_Phdr
 #endif
 
+#define PTE_V 0x01
+#define PTE_R 0x02
+#define PTE_W 0x04
+#define PTE_X 0x08
+
 extern uint8_t ramdisk_start;
+extern void* new_page(size_t nr_page);
+extern void map(AddrSpace *as, void *vap, void *pap, int prot);
 
 uintptr_t loader(PCB *pcb, const char *filename) {
   int fd = fs_open(filename, 0, 0);
@@ -34,10 +41,21 @@ uintptr_t loader(PCB *pcb, const char *filename) {
       Elf64_Off p_offset = elf_phdrs[i].p_offset;
       Elf64_Addr p_vaddr = elf_phdrs[i].p_vaddr;
       uint64_t p_filesz = elf_phdrs[i].p_filesz;
-      uint64_t p_memsz = elf_phdrs[i].p_memsz;
+      //uint64_t p_memsz = elf_phdrs[i].p_memsz;
+
       fs_lseek(fd, p_offset, SEEK_SET);
-      fs_read(fd, (void*)p_vaddr, p_filesz);
-      memset((void*)(p_vaddr + p_filesz), 0, p_memsz - p_filesz);
+      uint64_t va = p_vaddr;
+      for(int i = 0; i < p_filesz; i += PGSIZE){
+        uint64_t pa = (uint64_t)new_page(1);
+        fs_read(fd, (void*)pa, PGSIZE);
+        if(i + PGSIZE > p_filesz){
+          uint64_t lastbytes = p_filesz - i;
+          memset((void*)(pa + lastbytes), 0, PGSIZE - lastbytes);
+        }
+        int prot = PTE_R | PTE_W | PTE_X;
+        map(&pcb->as, (void*)va, (void*)pa, prot);
+        va += PGSIZE;
+      }
     }
   }
 

@@ -2,11 +2,17 @@
 
 #define MAX_NR_PROC 4
 
+#define PTE_V 0x01
+#define PTE_R 0x02
+#define PTE_W 0x04
+#define PTE_X 0x08
+
 static PCB pcb[MAX_NR_PROC] __attribute__((used)) = {};
 static PCB pcb_boot = {};
 PCB *current = NULL;
 
 extern uintptr_t loader(PCB *pcb, const char *filename);
+extern void map(AddrSpace *as, void *vap, void *pap, int prot);
 
 void switch_boot_pcb() {
   current = &pcb_boot;
@@ -37,6 +43,9 @@ static int get_strnum(char* const strv[]){
 }
 
 void context_uload(PCB* upcb, const char* filename, char* const argv[], char* const envp[]){
+  // init addr space
+  protect(&upcb->as);
+
   Area stack;
   stack.start = upcb->stack;
   stack.end = upcb->stack + STACK_SIZE;
@@ -46,6 +55,15 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
 
   uint64_t down = (uint64_t)new_page(8);
   uint64_t top = down + 8 * PGSIZE;
+
+  uint64_t pa = down;
+  uint64_t va = (uint64_t)upcb->as.area.end - 8 * PGSIZE;
+  for(int i = 0; i < 8; i++){
+    int prot = PTE_R | PTE_W | PTE_X;
+    map(&upcb->as, (void*)va, (void*)pa, prot);
+    pa += PGSIZE;
+    va += PGSIZE;
+  }
 
   int argc = get_strnum(argv);
   int envc = get_strnum(envp);
