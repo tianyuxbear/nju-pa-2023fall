@@ -248,12 +248,6 @@ static int decode_exec(Decode *s) {
   //============================================ RV32/64 privileged instructions ================================================
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC) + 4);
 
-  //============================================ RV32IC and RV64IC compress instructions ========================================
-  INSTPAT("010 ? ????? ????? 10", c.lwsp   , CL, R(rd) = SEXT(Mr(R(2) + imm, 4), 32));
-  INSTPAT("110 ? ????? ????? 01", c.beqz   , CB, s->dnpc = (R(8 + src1) == 0 ? s->pc + imm : s->snpc));
-  INSTPAT("100 ? 00??? ????? 01", c.srli   , CI, R(8 + R(rd)) = R(8 + R(rd)) >> imm);
-  INSTPAT("101 ? ????? ????? 01", c.j      , CJ, s->pc = s->pc + imm);
-
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
 
