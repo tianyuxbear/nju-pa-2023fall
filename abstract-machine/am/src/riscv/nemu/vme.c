@@ -26,6 +26,7 @@ static inline void set_satp(void *pdir) {
   uint64_t mode = 1ul << (__riscv_xlen - 1);
   uint64_t val = (((uint64_t)pdir) >> 12) | mode; 
   printf("enter set_satp\n");
+  printf("val: 0x%x\n", val);
   asm volatile("csrw satp, %0" : : "r"(val));
 }
 
