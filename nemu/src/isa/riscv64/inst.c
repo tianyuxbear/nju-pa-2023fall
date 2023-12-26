@@ -72,6 +72,7 @@ static word_t* csr_addr(word_t imm){
   switch (imm)
   {
   case 0x180:
+    printf("access satp\n");
     return &cpu.csr.satp;
     break;
   case 0x300:
