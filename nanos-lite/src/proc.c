@@ -1,6 +1,7 @@
 #include <proc.h>
 
 #define MAX_NR_PROC 4
+#define USER_HEAP_START 0x70000000
 
 #define PTE_V 0x01
 #define PTE_R 0x02
@@ -54,6 +55,7 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   printf("Entry addr: 0x%x\n", entry);
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
   upcb->cp->pdir = upcb->as.ptr;
+  upcb->max_brk = USER_HEAP_START;
 
   uint64_t down = (uint64_t)new_page(8);
   uint64_t top = down + 8 * PGSIZE;

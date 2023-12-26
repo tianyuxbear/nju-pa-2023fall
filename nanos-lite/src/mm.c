@@ -1,6 +1,12 @@
 #include <memory.h>
+#include <proc.h>
 
 static void *pf = NULL;
+extern void map(AddrSpace *as, void *vap, void *pap, int prot);
+#define PTE_V 0x01
+#define PTE_R 0x02
+#define PTE_W 0x04
+#define PTE_X 0x08
 
 void* new_page(size_t nr_page) {
   void* begin = pf;
@@ -24,7 +30,16 @@ void free_page(void *p) {
 
 /* The brk() system call handler. */
 int mm_brk(uintptr_t brk) {
-  
+  if(current->max_brk >= brk ) return 0;
+  uint32_t size = brk - current->max_brk;
+  uint64_t va = current->max_brk;
+  for(int i = 0; i < size; i += PGSIZE){
+    uint64_t pa = (uint64_t)new_page(1);
+    int prot = PTE_R | PTE_W | PTE_X;
+    map(&current->as, (void*)va, (void*)pa, prot);
+    va += PGSIZE;
+  }
+  current->max_brk = va;
   return 0;
 }
 

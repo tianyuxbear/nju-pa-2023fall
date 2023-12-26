@@ -8,6 +8,8 @@
 extern int _end;
 static uint64_t pre_program_break, cur_program_break;
 
+#define USER_HEAP_START 0x70000000
+
 // helper macros
 #define _concat(x, y) x ## y
 #define concat(x, y) _concat(x, y)
@@ -94,8 +96,8 @@ off_t _lseek(int fd, off_t offset, int whence) {
 
 void *_sbrk(intptr_t increment) {
   if(cur_program_break == 0){
-    pre_program_break = (uint64_t)&_end;
-    cur_program_break = (uint64_t)&_end;
+    pre_program_break = USER_HEAP_START;
+    cur_program_break = USER_HEAP_START;
   }else{
     pre_program_break = cur_program_break;
   }
