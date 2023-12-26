@@ -81,8 +81,10 @@ void map(AddrSpace *as, void *vap, void *pap, int prot) {
   uint64_t va = (uint64_t)vap;
   uint64_t pa = (uint64_t)pap;
 
-  va = PGROUNDDOWN(va);
-  pa = PGROUNDDOWN(pa);
+  if(OFFSET(va) != 0 || OFFSET(pa) != 0){
+    printf("map not aligned ==> va: 0x%x    pa: 0x%x\n", va, pa);
+    assert(0);
+  } 
 
   uint32_t va_vpn2 = VA_VPN2(va);
   uint32_t va_vpn1 = VA_VPN1(va);
