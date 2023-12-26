@@ -2,6 +2,8 @@
 #include <nemu.h>
 #include <klib.h>
 
+#define PGROUNDDOWN(addr) ((addr) & (~((1ull << 12) - 1)))
+
 static AddrSpace kas = {};
 static void* (*pgalloc_usr)(int) = NULL;
 static void (*pgfree_usr)(void*) = NULL;
@@ -79,8 +81,8 @@ void map(AddrSpace *as, void *vap, void *pap, int prot) {
   uint64_t va = (uint64_t)vap;
   uint64_t pa = (uint64_t)pap;
 
-  assert(OFFSET(va) == 0);
-  assert(OFFSET(pa) == 0);
+  va = PGROUNDDOWN(va);
+  pa = PGROUNDDOWN(pa);
 
   uint32_t va_vpn2 = VA_VPN2(va);
   uint32_t va_vpn1 = VA_VPN1(va);
