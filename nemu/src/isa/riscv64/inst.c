@@ -30,8 +30,9 @@ enum {
   TYPE_B,
   TYPE_U,
   TYPE_J,
-  TYPE_CI,
+  TYPE_CL,
   TYPE_CB,
+  TYPE_CI,
   TYPE_N // none
 };
 
@@ -55,7 +56,7 @@ enum {
                                  BITS(i, 20, 20) << 11 | \
                                  BITS(i, 30, 21) << 1), 21); } while(0)
 
-#define immCI() do { *imm = BITS(i, 3, 2) << 4   | \
+#define immCL() do { *imm = BITS(i, 3, 2) << 4   | \
                            BITS(i, 12, 12) << 3 | \
                            BITS(i, 6, 4);} while(0)
 
@@ -64,6 +65,9 @@ enum {
                                   BITS(i, 2, 2) << 5   | \
                                   BITS(i, 11, 10) << 3 | \
                                   BITS(i, 4, 3) << 1), 9);} while(0)
+
+#define immCI() do { *imm = BITS(i, 12, 12) << 5 | \
+                            BITS(i, 6, 2);} while(0)
 
 
 #define ETRACE_BUF_SIZE 128
@@ -119,9 +123,11 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_B: src1R(); src2R(); immB(); break;
     case TYPE_U:                   immU(); break;
     case TYPE_J:                   immJ(); break;
-    case TYPE_CI:                  immCI(); break;
+    case TYPE_CL:                  immCL(); break;
     case TYPE_CB: rs1 = BITS(i, 9, 7);   src1R();
                                    immCB(); break;
+    case TYPE_CI: *rd = BITS(i, 9, 7);  
+                                   immCI(); break;
     case TYPE_N:                           break;
     default:                    assert(0); break;
   }
@@ -233,8 +239,9 @@ static int decode_exec(Decode *s) {
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC) + 4);
 
   //============================================ RV32IC and RV64IC compress instructions ========================================
-  INSTPAT("010 ? ????? ????? 10", c.lwsp   , CI, R(rd) = SEXT(Mr(R(2) + imm, 4), 32));
+  INSTPAT("010 ? ????? ????? 10", c.lwsp   , CL, R(rd) = SEXT(Mr(R(2) + imm, 4), 32));
   INSTPAT("110 ? ????? ????? 01", c.beqz   , CB, s->dnpc = (R(8 + src1) == 0 ? s->pc + imm : s->snpc));
+  INSTPAT("100 ? 00??? ????? 01", c.srli   , CI, R(8 + R(rd)) = R(8 + R(rd)) >> imm);
 
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
