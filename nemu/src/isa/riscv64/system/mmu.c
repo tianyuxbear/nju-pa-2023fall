@@ -29,17 +29,16 @@
 
 // translation use
 #define OFFSET(addr) (addr & 0x0fff)
-#define VA_VPN0(va) ((va >> 12) & 0x01ff)
-#define VA_VPN1(va) ((va >> 21) & 0x01ff)
-#define VA_VPN2(va) ((va >> 30) & 0x01ff) 
-#define PA2PTE(addr) ((addr >> 12) << 10)
-#define PTE2PA(pte) ((pte >> 10) << 12)
+#define VA_VPN0(va) ((va >> 12) & 0x00000000000001ff)
+#define VA_VPN1(va) ((va >> 21) & 0x00000000000001ff)
+#define VA_VPN2(va) ((va >> 30) & 0x00000000000001ff) 
+#define PA2PTE(addr) (((addr >> 12) & 0xfffffffffff) << 10)
+#define PTE2PA(pte) (((pte >> 10) & 0xfffffffffff) << 12)
 #define PGROUNDDOWN(addr) ((addr) & (~((1ull << 12) - 1)))
 
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
-  printf("Enter translate!\n");
   assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len));
-  uint64_t offset = vaddr & 0x0fff;
+  uint64_t offset = vaddr & 0x0000000000000fff;
   uint64_t root = cpu.csr.satp << 12;
   
   uint32_t va_vpn2 = VA_VPN2(vaddr);
