@@ -47,7 +47,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
       uint64_t va = p_vaddr;
       for(int i = 0; i < p_filesz; i += PGSIZE){
         uint64_t pa = (uint64_t)new_page(1);
-        fs_read(fd, (void*)pa, PGSIZE);
+        //fs_read(fd, (void*)pa, PGSIZE);
         // if(i + PGSIZE > p_filesz){
         //   uint64_t lastbytes = p_filesz - i;
         //   memset((void*)(pa + lastbytes), 0, PGSIZE - lastbytes);
