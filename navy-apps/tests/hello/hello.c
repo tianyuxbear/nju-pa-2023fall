@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main(int argc, char *argv[], char *envp[]) {
-  printf("main ==> argc: %d    argv: 0x%016x    envp: 0x%016x\n", argc, (uint64_t)argv, (uint64_t)envp);
+  printf("main ==> argc: %d    argv: 0x%lx    envp: 0x%lx\n", argc, (uint64_t)argv, (uint64_t)envp);
   for(int i = 0; i < argc; i++){
     printf("%d arg ==> %s\n", i + 1, argv[i]);
   }
