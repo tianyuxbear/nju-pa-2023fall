@@ -29,6 +29,7 @@ static char* syscall_name[] = {
 
 extern void switch_boot_pcb();
 extern void context_uload(PCB* upcb, const char* filename, char* const argv[], char* const envp[]);
+extern int mm_brk(uintptr_t brk);
 
 void do_syscall(Context *c) {
   uint64_t a[4];
@@ -77,7 +78,7 @@ void do_syscall(Context *c) {
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_lseek], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_brk:
-      c->GPRx = 0;
+      c->GPRx = mm_brk(a[1]);
       printf("=== syscall: %s --> args: %p %p %p ret: %p ===  \n", syscall_name[SYS_brk], a[1], a[2], a[3], c->GPRx);
       break;
     case SYS_execve:
