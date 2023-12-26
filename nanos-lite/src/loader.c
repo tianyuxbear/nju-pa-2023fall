@@ -46,6 +46,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
       fs_lseek(fd, p_offset, SEEK_SET);
       uint64_t va = p_vaddr;
       for(int i = 0; i < p_filesz; i += PGSIZE){
+        printf("loader: va: 0x%x\n", va);
         uint64_t pa = (uint64_t)new_page(1);
         fs_read(fd, (void*)pa, PGSIZE);
         if(i + PGSIZE > p_filesz){
