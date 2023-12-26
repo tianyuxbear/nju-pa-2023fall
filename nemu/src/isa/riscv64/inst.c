@@ -30,6 +30,7 @@ enum {
   TYPE_B,
   TYPE_U,
   TYPE_J,
+  TYPE_C,
   TYPE_N // none
 };
 
@@ -52,6 +53,10 @@ enum {
                                  BITS(i, 19, 12) << 12 | \
                                  BITS(i, 20, 20) << 11 | \
                                  BITS(i, 30, 21) << 1), 21); } while(0)
+
+#define immC() do { *imm = BITS(i, 3, 2) << 4   | \
+                           BITS(i, 12, 12) << 3 | \
+                           BITS(i, 6, 4);} while(0)
 
 
 #define ETRACE_BUF_SIZE 128
@@ -107,6 +112,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_B: src1R(); src2R(); immB(); break;
     case TYPE_U:                   immU(); break;
     case TYPE_J:                   immJ(); break;
+    case TYPE_C:                   immC(); break;
     case TYPE_N:                           break;
     default:                    assert(0); break;
   }
@@ -216,6 +222,9 @@ static int decode_exec(Decode *s) {
 
   //============================================ RV32/64 privileged instructions ================================================
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , R, s->dnpc = CSR(CSR_MEPC) + 4);
+
+  //============================================ RV32IC and RV64IC compress instructions ========================================
+  INSTPAT("010 ? ????? ????? 10", c.lwsp   , C, R(rd) = SEXT(Mr(R(2) + imm, 4), 32));
 
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
