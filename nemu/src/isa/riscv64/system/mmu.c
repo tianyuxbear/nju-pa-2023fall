@@ -55,6 +55,8 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   assert((pte0 & PTE_V) != 0);
 
   uint64_t paddr = PTE2PA(pte0) | offset;
+  
+  assert(vaddr == paddr);
 
   return paddr;
 }
