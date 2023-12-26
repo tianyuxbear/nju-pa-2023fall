@@ -20,7 +20,6 @@ extern void* new_page(size_t nr_page);
 extern void map(AddrSpace *as, void *vap, void *pap, int prot);
 
 uintptr_t loader(PCB *pcb, const char *filename) {
-  printf("filename: %s\n", filename);
   int fd = fs_open(filename, 0, 0);
 
   Elf64_Ehdr elf_header;
