@@ -51,6 +51,7 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   stack.end = upcb->stack + STACK_SIZE;
 
   uintptr_t entry = loader(upcb, filename);
+  printf("Entry addr: 0x%x\n", entry);
   upcb->cp = ucontext(&upcb->as, stack, (void*)entry);
 
   uint64_t down = (uint64_t)new_page(8);
@@ -61,6 +62,7 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   for(int i = 0; i < 8; i++){
     int prot = PTE_R | PTE_W | PTE_X;
     map(&upcb->as, (void*)va, (void*)pa, prot);
+    printf("context_uload map ==> va: 0x%x   pa: 0x%x\n", va, pa);
     pa += PGSIZE;
     va += PGSIZE;
   }

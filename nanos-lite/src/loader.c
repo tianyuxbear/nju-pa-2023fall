@@ -54,6 +54,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
         }
         int prot = PTE_R | PTE_W | PTE_X;
         map(&pcb->as, (void*)va, (void*)pa, prot);
+        printf("Loader map ==> va: 0x%x   pa: 0x%x\n", va, pa);
         va += PGSIZE;
       }
     }
