@@ -33,6 +33,7 @@ enum {
   TYPE_CL,
   TYPE_CB,
   TYPE_CI,
+  TYPE_CJ,
   TYPE_N // none
 };
 
@@ -68,6 +69,15 @@ enum {
 
 #define immCI() do { *imm = BITS(i, 12, 12) << 5 | \
                             BITS(i, 6, 2);} while(0)
+
+#define immCJ() do { *imm = SEXT(BITS(i, 12, 12) << 11  | \
+                                 BITS(i, 8, 8) << 10    | \
+                                 BITS(i, 10, 9) << 8    | \
+                                 BITS(i, 6, 6) << 7     | \
+                                 BITS(i, 7, 7) << 6     | \
+                                 BITS(i, 2, 2) << 5     | \
+                                 BITS(i, 11, 11) << 4   | \
+                                 BITS(i, 5, 3) << 1 , 12); } while(0)
 
 
 #define ETRACE_BUF_SIZE 128
@@ -128,6 +138,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
                                    immCB(); break;
     case TYPE_CI: *rd = BITS(i, 9, 7);  
                                    immCI(); break;
+    case TYPE_CJ:                  immCJ(); break;
     case TYPE_N:                           break;
     default:                    assert(0); break;
   }
@@ -242,6 +253,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("010 ? ????? ????? 10", c.lwsp   , CL, R(rd) = SEXT(Mr(R(2) + imm, 4), 32));
   INSTPAT("110 ? ????? ????? 01", c.beqz   , CB, s->dnpc = (R(8 + src1) == 0 ? s->pc + imm : s->snpc));
   INSTPAT("100 ? 00??? ????? 01", c.srli   , CI, R(8 + R(rd)) = R(8 + R(rd)) >> imm);
+  INSTPAT("101 ? ????? ????? 01", c.j      , CJ, s->pc = s->pc + imm);
 
   //============================================ special instructions(nemu use) =================================================
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
