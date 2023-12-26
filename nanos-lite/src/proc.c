@@ -92,7 +92,7 @@ void context_uload(PCB* upcb, const char* filename, char* const argv[], char* co
   *((uint64_t*)addr) = 0;
   addr += 8;
 
-  upcb->cp->GPRx = (uint64_t)upcb->as.area.end - 8 * PGSIZE;
+  upcb->cp->GPRx = top - offset;
 
 
   printf("=== heap.start: 0x%016x    heap.end: 0x%016x    ===\n", (uint64_t)heap.start, (uint64_t)heap.end);
