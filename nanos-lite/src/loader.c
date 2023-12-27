@@ -57,7 +57,7 @@ uintptr_t loader(PCB *pcb, const char *filename) {
         va = PGROUNDDOWN(va);
         int prot = PTE_R | PTE_W | PTE_X;
         map(&pcb->as, (void*)va, (void*)pa, prot);
-        printf("Loader map ==> va: 0x%x   pa: 0x%x\n", va, pa);
+        printf("Loader map ==> va: 0x%x   pa: 0x%x\n", va + offset, pa + offset);
         va += PGSIZE;
       }
       for(int i = 0; i < p_filesz; i += PGSIZE){
