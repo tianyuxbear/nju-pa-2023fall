@@ -37,7 +37,6 @@
 #define PGROUNDDOWN(addr) ((addr) & (~((1ull << 12) - 1)))
 
 paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) { 
-  printf("translation vaddr: 0x%lx\n", vaddr);
   assert(PGROUNDDOWN(vaddr) == PGROUNDDOWN(vaddr + len - 1));
   uint64_t offset = vaddr & 0x0000000000000fff;
   uint64_t root = cpu.csr.satp << 12;
