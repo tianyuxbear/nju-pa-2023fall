@@ -46,13 +46,22 @@ paddr_t isa_mmu_translate(vaddr_t vaddr, int len, int type) {
   uint32_t va_vpn0 = VA_VPN0(vaddr);
 
   uint64_t pte2 = paddr_read(root + va_vpn2 * 8, 8);
-  assert((pte2 & PTE_V) != 0);
+  if((pte2 & PTE_V) == 0){
+    printf("translation error at va: 0x%lx\n", vaddr);
+    assert((pte2 & PTE_V) != 0);
+  }
   
   uint64_t pte1 = paddr_read((PTE2PA(pte2)) + va_vpn1 * 8, 8);
-  assert((pte1 & PTE_V) != 0);
+  if((pte1 & PTE_V) == 0){
+    printf("translation error at va: 0x%lx\n", vaddr);
+    assert((pte1 & PTE_V) != 0);
+  }
 
   uint64_t pte0 = paddr_read((PTE2PA(pte1)) + va_vpn0 * 8, 8);
-  assert((pte0 & PTE_V) != 0);
+  if((pte0 & PTE_V) == 0){
+    printf("translation error at va: 0x%lx\n", vaddr);
+    assert((pte0 & PTE_V) != 0);
+  }
 
   uint64_t paddr = PTE2PA(pte0) | offset;
   
