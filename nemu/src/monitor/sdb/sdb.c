@@ -105,7 +105,7 @@ static int cmd_x(char* args){
     return 0;
   }
   for(int i = 0; i < nwords; i++){
-    printf(FMT_WORD "\n",vaddr_read(xaddr, 4));
+    printf(FMT_WORD "\n",vaddr_read(xaddr, 4, 0xffffffff));
     xaddr += 4;
   }
   return 0;

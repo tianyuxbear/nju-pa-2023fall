@@ -23,7 +23,8 @@ word_t vaddr_ifetch(vaddr_t addr, int len) {
   return paddr_read(addr, len);
 }
 
-word_t vaddr_read(vaddr_t addr, int len) {
+word_t vaddr_read(vaddr_t addr, int len, word_t pc) {
+  printf("vaddr_read ==> va: 0x%lx  at pc: 0x%lx\n", addr, pc);
   if(isa_mmu_check(addr, len, 0) == MMU_TRANSLATE) addr = isa_mmu_translate(addr, len, 0);
   word_t ret = paddr_read(addr, len);
   memset(rtracebuf, 0, sizeof(rtracebuf));
@@ -35,7 +36,8 @@ word_t vaddr_read(vaddr_t addr, int len) {
   return ret;
 }
 
-void vaddr_write(vaddr_t addr, int len, word_t data) {  
+void vaddr_write(vaddr_t addr, int len, word_t data, word_t pc) {  
+  printf("vaddr_write ==> va: 0x%lx  at pc: 0x%lx\n", addr, pc);
   if(isa_mmu_check(addr, len, 0) == MMU_TRANSLATE) addr = isa_mmu_translate(addr, len, 0);
   paddr_write(addr, len, data);
   memset(wtracebuf, 0, sizeof(wtracebuf));
