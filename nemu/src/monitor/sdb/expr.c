@@ -385,7 +385,7 @@ word_t eval(word_t l, word_t r){
         break;
       case TK_MUL:
         word_t addr = eval(index + 1, r);
-        word_t result = vaddr_read(addr, 4, 0xffffffff);
+        word_t result = vaddr_read(addr, 4);
         return result;
         break;
       default:
